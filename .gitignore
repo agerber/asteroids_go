@@ -1,0 +1,39 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output of the go coverage tool
+*.out
+
+# Test binary, results, and logs
+*.test
+*.log
+
+# Dependency directories (only if using vendoring)
+vendor/
+
+# GoLand project files
+.idea/
+
+# Go modules
+/go/pkg
+/go/bin
+
+# Go workspaces (Go 1.18+)
+go.work
+go.work.sum
+
+# Build artifacts
+bin/
+dist/
+
+# Ignore compiled code
+*.o
+*.a
+*.class
+
+# Cache
+*.cache
+.cache/
