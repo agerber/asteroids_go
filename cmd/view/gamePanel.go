@@ -19,6 +19,7 @@ type GamePanel struct {
 	fontSmall font.Face
 	fontBig   font.Face
 	falconPts []model.PolarPoint
+	falcon    *model.Falcon
 }
 
 // NewGamePanel initializes a new GamePanel.
@@ -34,6 +35,7 @@ func NewGamePanel() *GamePanel {
 		fontSmall: basicfont.Face7x13,
 		fontBig:   basicfont.Face7x13, // Use a larger font for larger text
 		falconPts: falconPts,
+		falcon:    model.NewFalcon(),
 	}
 }
 
@@ -44,9 +46,31 @@ func (gp *GamePanel) Update() error {
 		return nil
 	}
 
-	// Handle game logic here, like moving objects
-	// controller.CommandCenter().MoveObjects()
+	gp.handleInput()
+
+	// Move the Falcon
+	gp.falcon.Move()
+
 	return nil
+}
+
+// handleInput captures player input for controlling the Falcon.
+func (gp *GamePanel) handleInput() {
+	// Reset turning state
+	gp.falcon.TurnState = model.IDLE
+
+	// Turning left
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		gp.falcon.TurnState = model.LEFT
+	}
+
+	// Turning right
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		gp.falcon.TurnState = model.RIGHT
+	}
+
+	// Thrusting (move forward)
+	gp.falcon.Thrusting = ebiten.IsKeyPressed(ebiten.KeyArrowUp)
 }
 
 // Draw draws the game screen.
@@ -56,7 +80,14 @@ func (gp *GamePanel) Draw(screen *ebiten.Image) {
 
 	cc := model.GetCommandCenter()
 	if cc.IsGameOver {
-		gp.displayTextOnScreen(screen, "GAME OVER", "Press S to Start", "Press Q to Quit")
+		gp.displayTextOnScreen(screen, "GAME OVER",
+			"use the arrow keys to turn and thrust",
+			"use the space bar to fire",
+			"'S' to Start",
+			"'P' to Pause",
+			"'Q' to Quit",
+			"'M' to toggle music",
+			"'A' to toggle radar")
 		return
 	}
 
@@ -66,6 +97,7 @@ func (gp *GamePanel) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw Falcon status, score, level, etc.
+	gp.falcon.Draw(screen)
 	gp.drawFalconStatus(screen)
 	gp.drawMeters(screen)
 	gp.drawShipsRemaining(screen)
@@ -83,9 +115,9 @@ func (gp *GamePanel) drawFalconStatus(screen *ebiten.Image) {
 
 	// Status messages like "SLOW DOWN" or "PRESS F for NUKE"
 	statusMessages := []string{}
-	if cc.Falcon.IsMaxSpeedAttained {
+	/*  if cc.Falcon.IsMaxSpeedAttained {
 		statusMessages = append(statusMessages, "WARNING - SLOW DOWN")
-	}
+	} */
 	if cc.Falcon.NukeMeter > 0 {
 		statusMessages = append(statusMessages, "PRESS F for NUKE")
 	}
