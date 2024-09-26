@@ -3,6 +3,8 @@ package model
 import (
 	"log"
 	"math"
+	"runtime"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -21,7 +23,7 @@ type Falcon struct {
 	SpriteThrust   *ebiten.Image
 }
 
-// TurnState helps manage turning of the Falcon
+
 type TurnState int
 
 const (
@@ -30,23 +32,49 @@ const (
 	RIGHT
 )
 
-// Constants for Falcon movement
 const (
 	TurnStep    = 11
 	ThrustPower = 0.85
 	MaxSpeed    = 8.0
 )
 
+type ImageMap map[string]*ebiten.Image
+
+var (
+	images ImageMap
+	once   sync.Once
+)
+
+// LoadImages function 
+func LoadImages() {
+	var err error
+	images = make(ImageMap)
+
+	var imagePaths map[string]string
+
+	if runtime.GOOS == "windows" {
+		imagePaths = map[string]string{
+			"falcon":     "..\\resources\\imgs\\fal\\falcon125.png",
+			"falcon_thr": "..\\resources\\imgs\\fal\\falcon125_thr.png",
+		}
+	} else {
+		imagePaths = map[string]string{
+			"falcon":     "../resources/imgs/fal/falcon125.png",
+			"falcon_thr": "../resources/imgs/fal/falcon125_thr.png",
+		}
+	}
+
+	for key, path := range imagePaths {
+		images[key], _, err = ebitenutil.NewImageFromFile(path)
+		if err != nil {
+			log.Fatalf("Error loading image %s: %v", path, err)
+		}
+	}
+}
+
 // NewFalcon creates and initializes a new Falcon instance
 func NewFalcon() *Falcon {
-	sprite, _, err := ebitenutil.NewImageFromFile("../resources/imgs/fal/falcon125.png")
-	if err != nil {
-		log.Fatalf("Error loading Falcon sprite: %v", err)
-	}
-	spriteThrust, _, err := ebitenutil.NewImageFromFile("../resources/imgs/fal/falcon125_thr.png")
-	if err != nil {
-		log.Fatalf("Error loading Falcon sprite: %v", err)
-	}
+	once.Do(LoadImages)
 
 	return &Falcon{
 		X:            320, // Starting position (center of screen)
@@ -54,8 +82,8 @@ func NewFalcon() *Falcon {
 		Shield:       100,
 		NukeMeter:    0,
 		TurnState:    IDLE,
-		Sprite:       sprite,
-		SpriteThrust: spriteThrust,
+		Sprite:       images["falcon"],
+		SpriteThrust: images["falcon_thr"],
 	}
 }
 
