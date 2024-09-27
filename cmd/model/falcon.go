@@ -1,12 +1,11 @@
 package model
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"log"
 	"math"
-	"path/filepath"
-	"sync"
+
+	"github.com/agerber/asteroids_go/cmd/util"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Falcon struct represents the player's ship
@@ -36,44 +35,24 @@ const (
 	MaxSpeed    = 8.0
 )
 
-type ImageMap map[string]*ebiten.Image
-
-var (
-	images ImageMap
-	once   sync.Once
-)
-
-// LoadImages function
-func LoadImages() {
-	var err error
-	images = make(ImageMap)
-
-	imagePaths := map[string]string{
-		"falcon":     filepath.Join("resources", "imgs", "fal", "falcon125.png"),
-		"falcon_thr": filepath.Join("resources", "imgs", "fal", "falcon125_thr.png"),
-	}
-
-	for key, path := range imagePaths {
-		images[key], _, err = ebitenutil.NewImageFromFile(path)
-		if err != nil {
-			log.Fatalf("Error loading image %s: %v", path, err)
-		}
-	}
-}
-
 // NewFalcon creates and initializes a new Falcon instance
 func NewFalcon() *Falcon {
-	once.Do(LoadImages)
 
-	return &Falcon{
+	falcon := &Falcon{
 		X:            320, // Starting position (center of screen)
 		Y:            240,
 		Shield:       100,
 		NukeMeter:    0,
 		TurnState:    IDLE,
-		Sprite:       images["falcon"],
-		SpriteThrust: images["falcon_thr"],
+		Sprite:       util.GetImage("falcon125.png"),
+		SpriteThrust: util.GetImage("falcon125_thr.png"),
 	}
+
+	if falcon.Sprite == nil || falcon.SpriteThrust == nil {
+		log.Printf("Sprite: %v, SpriteThrust: %v", falcon.Sprite, falcon.SpriteThrust)
+		panic("Failed to load Falcon images.")
+	}
+	return falcon
 }
 
 // Move updates the Falcon's position and orientation

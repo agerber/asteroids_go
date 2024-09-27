@@ -13,6 +13,6 @@ func main() {
 	ebiten.SetWindowSize(1080, 720)
 	ebiten.SetWindowTitle("Game Base")
 	if err := ebiten.RunGame(gameController); err != nil {
-		log.Fatal(err)
+		log.Fatal("here ", err)
 	}
 }
