@@ -1,13 +1,12 @@
 package model
 
 import (
-	"log"
-	"math"
-	"runtime"
-	"sync"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"log"
+	"math"
+	"path/filepath"
+	"sync"
 )
 
 // Falcon struct represents the player's ship
@@ -22,7 +21,6 @@ type Falcon struct {
 	Sprite         *ebiten.Image
 	SpriteThrust   *ebiten.Image
 }
-
 
 type TurnState int
 
@@ -45,23 +43,14 @@ var (
 	once   sync.Once
 )
 
-// LoadImages function 
+// LoadImages function
 func LoadImages() {
 	var err error
 	images = make(ImageMap)
 
-	var imagePaths map[string]string
-
-	if runtime.GOOS == "windows" {
-		imagePaths = map[string]string{
-			"falcon":     "..\\resources\\imgs\\fal\\falcon125.png",
-			"falcon_thr": "..\\resources\\imgs\\fal\\falcon125_thr.png",
-		}
-	} else {
-		imagePaths = map[string]string{
-			"falcon":     "../resources/imgs/fal/falcon125.png",
-			"falcon_thr": "../resources/imgs/fal/falcon125_thr.png",
-		}
+	imagePaths := map[string]string{
+		"falcon":     filepath.Join("resources", "imgs", "fal", "falcon125.png"),
+		"falcon_thr": filepath.Join("resources", "imgs", "fal", "falcon125_thr.png"),
 	}
 
 	for key, path := range imagePaths {
