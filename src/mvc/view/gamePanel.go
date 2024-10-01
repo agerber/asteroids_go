@@ -6,7 +6,7 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/agerber/asteroids_go/cmd/model"
+	"github.com/agerber/asteroids_go/src/mvc/model"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"

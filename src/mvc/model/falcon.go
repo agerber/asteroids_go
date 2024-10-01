@@ -4,7 +4,7 @@ import (
 	"log"
 	"math"
 
-	"github.com/agerber/asteroids_go/cmd/util"
+	"github.com/agerber/asteroids_go/src/mvc/util"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

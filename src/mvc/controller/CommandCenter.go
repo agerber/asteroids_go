@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"github.com/agerber/asteroids_go/cmd/model"
-	"github.com/agerber/asteroids_go/cmd/view"
+	"github.com/agerber/asteroids_go/src/mvc/model"
+	"github.com/agerber/asteroids_go/src/mvc/view"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
