@@ -7,6 +7,7 @@ import (
 	"math"
 
 	"github.com/agerber/asteroids_go/src/mvc/model"
+	"github.com/agerber/asteroids_go/src/mvc/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
@@ -17,14 +18,14 @@ import (
 type GamePanel struct {
 	fontSmall font.Face
 	fontBig   font.Face
-	falconPts []model.PolarPoint
+	falconPts []prime.PolarPoint
 	falcon    *model.Falcon
 }
 
 // NewGamePanel initializes a new GamePanel.
 func NewGamePanel() *GamePanel {
 	// Create points for falcon ship
-	falconPts := []model.PolarPoint{
+	falconPts := []prime.PolarPoint{
 		{R: 10, Theta: 0},
 		{R: 8, Theta: math.Pi / 4},
 		{R: 10, Theta: math.Pi / 2},
@@ -198,7 +199,7 @@ func (gp *GamePanel) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return 640, 480
 }
 
-func PolarToCartesian(polar model.PolarPoint) (x, y float32) {
+func PolarToCartesian(polar prime.PolarPoint) (x, y float32) {
 	x = float32(polar.R * math.Cos(polar.Theta))
 	y = float32(polar.R * math.Sin(polar.Theta))
 	return x, y

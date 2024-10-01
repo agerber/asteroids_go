@@ -7,10 +7,6 @@ package model
 	ShowLevel          int  // Shows the level progress
 } */
 
-type PolarPoint struct {
-	R     float64 // The radial distance
-	Theta float64 // The angle in radians
-}
 type CommandCenter struct {
 	Level      int     // Current game level
 	Score      int     // Player's score

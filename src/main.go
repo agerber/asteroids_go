@@ -1,19 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/agerber/asteroids_go/src/mvc/view"
-
+	"github.com/agerber/asteroids_go/src/mvc/controller"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-	ebiten.SetWindowSize(800, 600)
-	ebiten.SetWindowTitle("My Game")
-	gameFrame := &view.GamePanel{}
-	if err := ebiten.RunGame(gameFrame); err != nil {
-		fmt.Println(err)
+	gameController := controller.NewGameController()
+
+	ebiten.SetWindowSize(1080, 720)
+	ebiten.SetWindowTitle("Game Base")
+	if err := ebiten.RunGame(gameController); err != nil {
+		log.Fatal("here ", err)
 	}
 }
