@@ -72,7 +72,7 @@ func getSourceDirectory() string {
 	if !ok {
 		log.Fatal("Failed to get source directory")
 	}
-	return filepath.Dir(filePath) 
+	return filepath.Dir(filePath)
 }
 
 func init() {
