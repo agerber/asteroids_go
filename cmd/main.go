@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/agerber/asteroids_go/cmd/controller"
+	"github.com/agerber/asteroids_go/src/mvc/controller"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
