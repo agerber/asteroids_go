@@ -16,6 +16,9 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	// keep track of the frame for development purposes
+	GetCommandCenterInstance().IncrementFrame()
+
 	return nil
 }
 

@@ -13,7 +13,7 @@ var (
 	singletonCommandCenter *CommandCenter
 )
 
-func GetInstance() *CommandCenter {
+func GetCommandCenterInstance() *CommandCenter {
 	if singletonCommandCenter == nil {
 		singletonLock.Lock()
 		defer singletonLock.Unlock()
