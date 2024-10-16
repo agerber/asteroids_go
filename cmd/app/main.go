@@ -1,14 +1,15 @@
 package main
 
 import (
-	"os"
-
+	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/controller"
-	"github.com/gotk3/gotk3/gtk"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
-	gtk.Init(&os.Args)
-	_ = controller.NewGame()
-	gtk.Main()
+	ebiten.SetWindowSize(config.DIM.Width, config.DIM.Height)
+	ebiten.SetWindowTitle(config.WINDOW_TITLE)
+	if err := ebiten.RunGame(controller.NewGame()); err != nil {
+		panic(err)
+	}
 }

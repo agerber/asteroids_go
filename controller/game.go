@@ -1,10 +1,9 @@
 package controller
 
-import "github.com/agerber/asteroids_go/view"
-
-const (
-	GAME_SCREEN_WIDTH  = 1500
-	GAME_SCREEN_HEIGHT = 950
+import (
+	"github.com/agerber/asteroids_go/config"
+	"github.com/agerber/asteroids_go/view"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
@@ -12,6 +11,18 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	gamePanel := view.NewGamePanel(GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT)
+	gamePanel := view.NewGamePanel(config.DIM)
 	return &Game{gamePanel: gamePanel}
+}
+
+func (g *Game) Update() error {
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	g.gamePanel.Draw(screen)
+}
+
+func (g *Game) Layout(outsideWidth int, outsideHeight int) (screenWidth int, screenHeight int) {
+	return config.DIM.Width, config.DIM.Height
 }
