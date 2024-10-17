@@ -1,10 +1,13 @@
 package view
 
 import (
+	"container/list"
 	"image/color"
 	"math"
 
+	"github.com/agerber/asteroids_go/commandcenter"
 	"github.com/agerber/asteroids_go/config"
+	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -71,7 +74,22 @@ func NewGamePanel(dim config.Dimension) *GamePanel {
 }
 
 func (g *GamePanel) Draw(screen *ebiten.Image) {
+	g.moveDrawMovables(screen,
+		commandcenter.GetCommandCenterInstance().MovDebris,
+		commandcenter.GetCommandCenterInstance().MovFriends,
+		commandcenter.GetCommandCenterInstance().MovFoes,
+		commandcenter.GetCommandCenterInstance().MovFloaters)
 	g.drawNumberShipsRemaining(screen)
+}
+
+func (g *GamePanel) moveDrawMovables(screen *ebiten.Image, teams ...*list.List) {
+	for _, team := range teams {
+		for e := team.Front(); e != nil; e = e.Next() {
+			movable := e.Value.(model.Movable)
+			movable.Move()
+			movable.Draw(screen)
+		}
+	}
 }
 
 func (g *GamePanel) drawNumberShipsRemaining(screen *ebiten.Image) {

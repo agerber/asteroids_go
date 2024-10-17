@@ -2,6 +2,7 @@ package model
 
 import (
 	"container/list"
+
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -21,6 +22,6 @@ type Movable interface {
 	GetCenter() prime.Point
 	GetRadius() int
 	GetTeam() Team
-	AddToGame(list list.List)
-	RemoveFromGame(list list.List)
+	AddToGame(list *list.List)
+	RemoveFromGame(list *list.List)
 }
