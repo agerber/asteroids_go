@@ -65,6 +65,10 @@ func (c *CommandCenter) InitGame() {
 	//opsQueue.enqueue(miniMap, GameOp.Action.ADD)
 }
 
+func (c *CommandCenter) GetFrame() int64 {
+	return c.frame
+}
+
 func (c *CommandCenter) IncrementFrame() {
 	if c.frame >= math.MaxInt64 {
 		c.frame = 0
