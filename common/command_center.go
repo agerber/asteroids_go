@@ -17,4 +17,8 @@ type ICommandCenter interface {
 	GetMovFoes() *list.List
 	GetMovFloaters() *list.List
 	GetGameOpsQueue() *GameOpsQueue
+	GetScore() int64
+	SetScore(score int64)
+	GetLevel() int
+	SetLevel(level int)
 }
