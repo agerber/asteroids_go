@@ -1,11 +1,14 @@
 package utils
 
 import (
+	"image/color"
 	"math"
 	"math/rand"
 	"time"
 
 	"github.com/agerber/asteroids_go/model/prime"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 func GenerateRandomInt(bound int) int {
@@ -39,4 +42,13 @@ func CartesiansToPolars(pointCartesians []prime.Point) []prime.PolarPoint {
 	}
 
 	return polars
+}
+
+func DrawPolygon(screen *ebiten.Image, points []prime.Point, color color.Color) {
+	// Draw lines between each pair of points
+	for i := 0; i < len(points); i++ {
+		start := points[i]
+		end := points[(i+1)%len(points)] // Wrap around to the first point after the last point
+		vector.StrokeLine(screen, float32(start.X), float32(start.Y), float32(end.X), float32(end.Y), 1, color, false)
+	}
 }

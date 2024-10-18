@@ -1,6 +1,4 @@
-package commandcenter
-
-import "github.com/agerber/asteroids_go/model"
+package common
 
 type Action int
 
@@ -10,6 +8,6 @@ const (
 )
 
 type GameOp struct {
-	Movable model.Movable
+	Movable Movable
 	Action  Action
 }

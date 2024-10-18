@@ -1,6 +1,4 @@
-package commandcenter
-
-import "github.com/agerber/asteroids_go/model"
+package common
 
 const MAX_GAME_OPS_QUEUE_SIZE = 100000
 
@@ -14,7 +12,7 @@ func NewGameOpsQueue() *GameOpsQueue {
 	}
 }
 
-func (q *GameOpsQueue) Enqueue(movable model.Movable, action Action) {
+func (q *GameOpsQueue) Enqueue(movable Movable, action Action) {
 	q.queue <- &GameOp{
 		Movable: movable,
 		Action:  action,

@@ -5,13 +5,11 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/agerber/asteroids_go/commandcenter"
+	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/config"
-	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 const (
@@ -25,9 +23,11 @@ var (
 type GamePanel struct {
 	dim                 config.Dimension
 	pointShipsRemaining []prime.Point
+
+	commandCenter common.ICommandCenter
 }
 
-func NewGamePanel(dim config.Dimension) *GamePanel {
+func NewGamePanel(dim config.Dimension, commandCenter common.ICommandCenter) *GamePanel {
 	// Robert Alef's awesome falcon design
 	pointShipsRemaining := make([]prime.Point, 0, 36)
 	pointShipsRemaining = append(pointShipsRemaining, prime.Point{X: 0, Y: 9})
@@ -70,22 +70,23 @@ func NewGamePanel(dim config.Dimension) *GamePanel {
 	return &GamePanel{
 		dim:                 dim,
 		pointShipsRemaining: pointShipsRemaining,
+		commandCenter:       commandCenter,
 	}
 }
 
 func (g *GamePanel) Draw(screen *ebiten.Image) {
 	g.moveDrawMovables(screen,
-		commandcenter.GetCommandCenterInstance().MovDebris,
-		commandcenter.GetCommandCenterInstance().MovFriends,
-		commandcenter.GetCommandCenterInstance().MovFoes,
-		commandcenter.GetCommandCenterInstance().MovFloaters)
+		g.commandCenter.GetMovDebris(),
+		g.commandCenter.GetMovFriends(),
+		g.commandCenter.GetMovFoes(),
+		g.commandCenter.GetMovFloaters())
 	g.drawNumberShipsRemaining(screen)
 }
 
 func (g *GamePanel) moveDrawMovables(screen *ebiten.Image, teams ...*list.List) {
 	for _, team := range teams {
 		for e := team.Front(); e != nil; e = e.Next() {
-			movable := e.Value.(model.Movable)
+			movable := e.Value.(common.Movable)
 			movable.Move()
 			movable.Draw(screen)
 		}
@@ -133,10 +134,5 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 		points[i] = point
 	}
 
-	// Draw lines between each pair of points
-	for i := 0; i < len(points); i++ {
-		start := points[i]
-		end := points[(i+1)%len(points)] // Wrap around to the first point after the last point
-		vector.StrokeLine(screen, float32(start.X), float32(start.Y), float32(end.X), float32(end.Y), 1, OrangeColor, false)
-	}
+	utils.DrawPolygon(screen, points, OrangeColor)
 }

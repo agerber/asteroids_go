@@ -3,28 +3,34 @@ package controller
 import (
 	"container/list"
 
-	"github.com/agerber/asteroids_go/commandcenter"
+	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/config"
-	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/view"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	gamePanel *view.GamePanel
+	commandCenter common.ICommandCenter
+	gamePanel     *view.GamePanel
 }
 
 func NewGame() *Game {
+	commandCenter := NewCommandCenter()
+	gamePanel := view.NewGamePanel(config.DIM, commandCenter)
+
 	// Move to correct location
-	commandcenter.GetCommandCenterInstance().InitGame()
-	gamePanel := view.NewGamePanel(config.DIM)
-	return &Game{gamePanel: gamePanel}
+	commandCenter.InitGame()
+
+	return &Game{
+		commandCenter: commandCenter,
+		gamePanel:     gamePanel,
+	}
 }
 
 func (g *Game) Update() error {
-	processGameOpsQueue()
+	g.processGameOpsQueue()
 	// keep track of the frame for development purposes
-	commandcenter.GetCommandCenterInstance().IncrementFrame()
+	g.commandCenter.IncrementFrame()
 
 	return nil
 }
@@ -37,28 +43,28 @@ func (g *Game) Layout(outsideWidth int, outsideHeight int) (screenWidth int, scr
 	return config.DIM.Width, config.DIM.Height
 }
 
-func processGameOpsQueue() {
+func (g *Game) processGameOpsQueue() {
 	for {
 		select {
-		case gameOp := <-commandcenter.GetCommandCenterInstance().GameOpsQueue.Dequeue():
+		case gameOp := <-g.commandCenter.GetGameOpsQueue().Dequeue():
 			var list *list.List
 			switch gameOp.Movable.GetTeam() {
-			case model.FOE:
-				list = commandcenter.GetCommandCenterInstance().MovFoes
-			case model.FRIEND:
-				list = commandcenter.GetCommandCenterInstance().MovFriends
-			case model.FLOATER:
-				list = commandcenter.GetCommandCenterInstance().MovFloaters
-			case model.DEBRIS:
-				list = commandcenter.GetCommandCenterInstance().MovDebris
+			case common.FOE:
+				list = g.commandCenter.GetMovFoes()
+			case common.FRIEND:
+				list = g.commandCenter.GetMovFriends()
+			case common.FLOATER:
+				list = g.commandCenter.GetMovFloaters()
+			case common.DEBRIS:
+				list = g.commandCenter.GetMovDebris()
 			default:
 				return
 			}
 
 			switch gameOp.Action {
-			case commandcenter.ADD:
+			case common.ADD:
 				gameOp.Movable.AddToGame(list)
-			case commandcenter.REMOVE:
+			case common.REMOVE:
 				gameOp.Movable.RemoveFromGame(list)
 			}
 		default:
