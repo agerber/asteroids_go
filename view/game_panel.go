@@ -2,6 +2,7 @@ package view
 
 import (
 	"container/list"
+	"fmt"
 	"image/color"
 	"math"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font/basicfont"
 )
 
 const (
@@ -75,6 +78,7 @@ func NewGamePanel(dim config.Dimension, commandCenter common.ICommandCenter) *Ga
 }
 
 func (g *GamePanel) Draw(screen *ebiten.Image) {
+	g.drawNumFrame(screen)
 	g.moveDrawMovables(screen,
 		g.commandCenter.GetMovDebris(),
 		g.commandCenter.GetMovFriends(),
@@ -135,4 +139,12 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 	}
 
 	utils.DrawPolygon(screen, points, OrangeColor)
+}
+
+// TODO: Update to new font
+var normalFont = basicfont.Face7x13
+
+func (g *GamePanel) drawNumFrame(screen *ebiten.Image) {
+	numFrameText := fmt.Sprintf("FRAME[GO]:%d", g.commandCenter.GetFrame())
+	text.Draw(screen, numFrameText, normalFont, normalFont.Width, config.DIM.Height-(normalFont.Height), color.White)
 }

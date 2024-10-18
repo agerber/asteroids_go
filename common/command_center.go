@@ -8,6 +8,7 @@ import (
 
 type ICommandCenter interface {
 	InitGame()
+	GetFrame() int64
 	IncrementFrame()
 	IsGameOver() bool
 	GetUniDim() config.Dimension
