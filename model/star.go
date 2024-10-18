@@ -19,7 +19,7 @@ type Star struct {
 	commandCenter common.ICommandCenter
 }
 
-func NewStar(commandCenter common.ICommandCenter) *Star {
+func NewStar(commandCenter common.ICommandCenter) common.Movable {
 	bright := uint8(utils.GenerateRandomInt(226))
 
 	return &Star{

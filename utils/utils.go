@@ -11,9 +11,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+var random = rand.New(rand.NewSource(time.Now().UnixNano()))
+
 func GenerateRandomInt(bound int) int {
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return random.Intn(bound)
+}
+
+func GenerateRandomFloat64(bound float64) float64 {
+	return random.Float64() * bound
 }
 
 func CartesiansToPolars(pointCartesians []prime.Point) []prime.PolarPoint {
@@ -42,6 +47,27 @@ func CartesiansToPolars(pointCartesians []prime.Point) []prime.PolarPoint {
 	}
 
 	return polars
+}
+
+func PolarToCartesian(pp prime.PolarPoint, radius int) prime.Point {
+	return prime.Point{
+		X: pp.R * float64(radius) * math.Sin(pp.Theta),
+		Y: pp.R * float64(radius) * math.Cos(pp.Theta),
+	}
+}
+
+func RotatePolarByOrientation(pp prime.PolarPoint, orientation float64) prime.PolarPoint {
+	return prime.PolarPoint{
+		R:     pp.R,
+		Theta: pp.Theta + orientation, // rotated Theta
+	}
+}
+
+func AdjustForLocation(p prime.Point, center prime.Point) prime.Point {
+	return prime.Point{
+		X: center.X + p.X,
+		Y: center.Y - p.Y,
+	}
 }
 
 func DrawPolygon(screen *ebiten.Image, points []prime.Point, color color.Color) {
