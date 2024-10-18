@@ -105,6 +105,22 @@ func (c *CommandCenter) GetGameOpsQueue() *common.GameOpsQueue {
 	return c.gameOpsQueue
 }
 
+func (c *CommandCenter) GetScore() int64 {
+	return c.score
+}
+
+func (c *CommandCenter) SetScore(score int64) {
+	c.score = score
+}
+
+func (c *CommandCenter) GetLevel() int {
+	return c.level
+}
+
+func (c *CommandCenter) SetLevel(level int) {
+	c.level = level
+}
+
 func (c *CommandCenter) setDimHash() {
 	c.miniDimHash[FREE_FLY] = config.Dimension{Width: 1, Height: 1}
 	c.miniDimHash[CENTER] = config.Dimension{Width: 1, Height: 1}

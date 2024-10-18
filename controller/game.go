@@ -5,6 +5,7 @@ import (
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/config"
+	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/view"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -20,6 +21,8 @@ func NewGame() *Game {
 
 	// Move to correct location
 	commandCenter.InitGame()
+	// TODO: remove it
+	commandCenter.SetLevel(5)
 
 	return &Game{
 		commandCenter: commandCenter,
@@ -28,6 +31,7 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	g.checkNewLevel()
 	g.processGameOpsQueue()
 	// keep track of the frame for development purposes
 	g.commandCenter.IncrementFrame()
@@ -71,4 +75,31 @@ func (g *Game) processGameOpsQueue() {
 			return
 		}
 	}
+}
+
+func (g *Game) spawnBigAsteroids(num int) {
+	for i := 0; i < num; i++ {
+		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewAsteroid(0, g.commandCenter), common.ADD)
+	}
+}
+
+func (g *Game) isLevelClear() bool {
+	// If there are no more Asteroids on the screen
+	for e := g.commandCenter.GetMovFoes().Front(); e != nil; e = e.Next() {
+		if _, ok := e.Value.(*model.Asteroid); ok {
+			return false
+		}
+	}
+	return true
+}
+
+func (g *Game) checkNewLevel() {
+	if !g.isLevelClear() {
+		return
+	}
+
+	level := g.commandCenter.GetLevel()
+
+	level++
+	g.spawnBigAsteroids(level)
 }
