@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"image/color"
 
+	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/agerber/asteroids_go/utils"
@@ -14,9 +15,11 @@ import (
 type Star struct {
 	center prime.Point
 	color  color.RGBA
+
+	commandCenter common.ICommandCenter
 }
 
-func NewStar() *Star {
+func NewStar(commandCenter common.ICommandCenter) *Star {
 	bright := uint8(utils.GenerateRandomInt(226))
 
 	return &Star{
@@ -30,6 +33,7 @@ func NewStar() *Star {
 			B: bright,
 			A: 255,
 		},
+		commandCenter: commandCenter,
 	}
 }
 
@@ -45,8 +49,8 @@ func (s *Star) GetRadius() int {
 	return 1
 }
 
-func (s *Star) GetTeam() Team {
-	return DEBRIS
+func (s *Star) GetTeam() common.Team {
+	return common.DEBRIS
 }
 
 func (s *Star) Move() {

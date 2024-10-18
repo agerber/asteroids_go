@@ -1,30 +1,13 @@
-package commandcenter
+package controller
 
 import (
 	"container/list"
 	"math"
-	"sync"
 
+	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model"
 )
-
-var (
-	singletonLock          = &sync.Mutex{}
-	singletonCommandCenter *CommandCenter
-)
-
-func GetCommandCenterInstance() *CommandCenter {
-	if singletonCommandCenter == nil {
-		singletonLock.Lock()
-		defer singletonLock.Unlock()
-		if singletonCommandCenter == nil {
-			singletonCommandCenter = NewCommandCenter()
-		}
-	}
-
-	return singletonCommandCenter
-}
 
 type Universe int
 
@@ -49,11 +32,11 @@ type CommandCenter struct {
 	//private final Falcon falcon  = new Falcon();
 	miniDimHash map[Universe]config.Dimension
 	//private final MiniMap miniMap = new MiniMap();
-	MovDebris    *list.List
-	MovFriends   *list.List
-	MovFoes      *list.List
-	MovFloaters  *list.List
-	GameOpsQueue *GameOpsQueue
+	movDebris    *list.List
+	movFriends   *list.List
+	movFoes      *list.List
+	movFloaters  *list.List
+	gameOpsQueue *common.GameOpsQueue
 }
 
 func NewCommandCenter() *CommandCenter {
@@ -61,11 +44,11 @@ func NewCommandCenter() *CommandCenter {
 		//new Falcon();
 		miniDimHash: make(map[Universe]config.Dimension),
 		//new MiniMap();
-		MovDebris:    list.New(),
-		MovFriends:   list.New(),
-		MovFoes:      list.New(),
-		MovFloaters:  list.New(),
-		GameOpsQueue: NewGameOpsQueue(),
+		movDebris:    list.New(),
+		movFriends:   list.New(),
+		movFoes:      list.New(),
+		movFloaters:  list.New(),
+		gameOpsQueue: common.NewGameOpsQueue(),
 	}
 }
 
@@ -102,6 +85,26 @@ func (c *CommandCenter) IsFalconPositionFixed() bool {
 	return c.universe != FREE_FLY
 }
 
+func (c *CommandCenter) GetMovDebris() *list.List {
+	return c.movDebris
+}
+
+func (c *CommandCenter) GetMovFriends() *list.List {
+	return c.movFriends
+}
+
+func (c *CommandCenter) GetMovFoes() *list.List {
+	return c.movFoes
+}
+
+func (c *CommandCenter) GetMovFloaters() *list.List {
+	return c.movFloaters
+}
+
+func (c *CommandCenter) GetGameOpsQueue() *common.GameOpsQueue {
+	return c.gameOpsQueue
+}
+
 func (c *CommandCenter) setDimHash() {
 	c.miniDimHash[FREE_FLY] = config.Dimension{Width: 1, Height: 1}
 	c.miniDimHash[CENTER] = config.Dimension{Width: 1, Height: 1}
@@ -113,13 +116,13 @@ func (c *CommandCenter) setDimHash() {
 
 func (c *CommandCenter) generateStarField() {
 	for i := 0; i < 100; i++ {
-		c.GameOpsQueue.Enqueue(model.NewStar(), ADD)
+		c.gameOpsQueue.Enqueue(model.NewStar(c), common.ADD)
 	}
 }
 
 func (c *CommandCenter) clearAll() {
-	c.MovDebris.Init()
-	c.MovFriends.Init()
-	c.MovFoes.Init()
-	c.MovFloaters.Init()
+	c.movDebris.Init()
+	c.movFriends.Init()
+	c.movFoes.Init()
+	c.movFloaters.Init()
 }
