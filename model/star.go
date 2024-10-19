@@ -5,9 +5,7 @@ import (
 	"image/color"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model/prime"
-	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
@@ -20,12 +18,12 @@ type Star struct {
 }
 
 func NewStar(commandCenter common.ICommandCenter) common.Movable {
-	bright := uint8(utils.GenerateRandomInt(226))
+	bright := uint8(common.GenerateRandomInt(226))
 
 	return &Star{
 		center: prime.Point{
-			X: float64(utils.GenerateRandomInt(config.DIM.Width)),
-			Y: float64(utils.GenerateRandomInt(config.DIM.Height)),
+			X: float64(common.GenerateRandomInt(common.DIM.Width)),
+			Y: float64(common.GenerateRandomInt(common.DIM.Height)),
 		},
 		color: color.RGBA{
 			R: bright,
@@ -56,14 +54,14 @@ func (s *Star) GetTeam() common.Team {
 func (s *Star) Move() {
 	//if (!CommandCenter.getInstance().isFalconPositionFixed()) return;
 
-	if s.center.X > float64(config.DIM.Width) {
+	if s.center.X > float64(common.DIM.Width) {
 		s.center.X = 1
 	} else if s.center.X < 0 {
-		s.center.X = float64(config.DIM.Width - 1)
-	} else if s.center.Y > float64(config.DIM.Height) {
+		s.center.X = float64(common.DIM.Width - 1)
+	} else if s.center.Y > float64(common.DIM.Height) {
 		s.center.Y = 1
 	} else if s.center.Y < 0 {
-		s.center.Y = float64(config.DIM.Height - 1)
+		s.center.Y = float64(common.DIM.Height - 1)
 	} else {
 		s.center.X += 1
 		s.center.Y += 1

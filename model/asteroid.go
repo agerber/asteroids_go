@@ -6,9 +6,7 @@ import (
 	"sort"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model/prime"
-	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -25,9 +23,9 @@ func NewAsteroid(size int, commandCenter common.ICommandCenter) *Asteroid {
 	}
 
 	if size == 0 {
-		asteroid.radius = config.LARGE_RADIUS
+		asteroid.radius = common.LARGE_RADIUS
 	} else {
-		asteroid.radius = config.LARGE_RADIUS / (size * 2)
+		asteroid.radius = common.LARGE_RADIUS / (size * 2)
 	}
 	asteroid.team = common.FOE
 	asteroid.color = color.White
@@ -88,12 +86,12 @@ func (a *Asteroid) RemoveFromGame(list *list.List) {
 }
 
 func (a *Asteroid) generateVertices() []prime.Point {
-	vertices := utils.GenerateRandomInt(7) + 25
+	vertices := common.GenerateRandomInt(7) + 25
 	polars := make([]prime.PolarPoint, vertices)
 
 	for i := 0; i < vertices; i++ {
-		r := (800 + float64(utils.GenerateRandomInt(200))) / config.PRECISION
-		theta := float64(utils.GenerateRandomInt(config.MAX_RADIANS_X1000)) / config.PRECISION
+		r := (800 + float64(common.GenerateRandomInt(200))) / common.PRECISION
+		theta := float64(common.GenerateRandomInt(common.MAX_RADIANS_X1000)) / common.PRECISION
 		polars[i] = prime.PolarPoint{R: r, Theta: theta}
 	}
 
@@ -103,7 +101,7 @@ func (a *Asteroid) generateVertices() []prime.Point {
 
 	points := make([]prime.Point, vertices)
 	for i, p := range polars {
-		points[i] = utils.PolarToCartesian(p, config.PRECISION)
+		points[i] = common.PolarToCartesian(p, common.PRECISION)
 	}
 
 	return points
@@ -111,11 +109,11 @@ func (a *Asteroid) generateVertices() []prime.Point {
 
 func (a *Asteroid) getSize() int {
 	switch a.radius {
-	case config.LARGE_RADIUS:
+	case common.LARGE_RADIUS:
 		return 0
-	case config.LARGE_RADIUS / 2:
+	case common.LARGE_RADIUS / 2:
 		return 1
-	case config.LARGE_RADIUS / 4:
+	case common.LARGE_RADIUS / 4:
 		return 2
 	default:
 		return 0

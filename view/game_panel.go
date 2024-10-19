@@ -7,9 +7,7 @@ import (
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model/prime"
-	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font/basicfont"
@@ -24,13 +22,13 @@ var (
 )
 
 type GamePanel struct {
-	dim                 config.Dimension
+	dim                 common.Dimension
 	pointShipsRemaining []prime.Point
 
 	commandCenter common.ICommandCenter
 }
 
-func NewGamePanel(dim config.Dimension, commandCenter common.ICommandCenter) *GamePanel {
+func NewGamePanel(dim common.Dimension, commandCenter common.ICommandCenter) *GamePanel {
 	// Robert Alef's awesome falcon design
 	pointShipsRemaining := make([]prime.Point, 0, 36)
 	pointShipsRemaining = append(pointShipsRemaining, prime.Point{X: 0, Y: 9})
@@ -109,7 +107,7 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 	XPos := g.dim.Width - (27 * offset)
 	YPos := g.dim.Height - 45
 
-	polars := utils.CartesiansToPolars(g.pointShipsRemaining)
+	polars := common.CartesiansToPolars(g.pointShipsRemaining)
 
 	rotatePolarBy90 := func(pp prime.PolarPoint) prime.PolarPoint {
 		return prime.PolarPoint{
@@ -138,7 +136,7 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 		points[i] = point
 	}
 
-	utils.DrawPolygon(screen, points, OrangeColor)
+	common.DrawPolygon(screen, points, OrangeColor)
 }
 
 // TODO: Update to new font
@@ -146,5 +144,5 @@ var normalFont = basicfont.Face7x13
 
 func (g *GamePanel) drawNumFrame(screen *ebiten.Image) {
 	numFrameText := fmt.Sprintf("FRAME[GO]:%d", g.commandCenter.GetFrame())
-	text.Draw(screen, numFrameText, normalFont, normalFont.Width, config.DIM.Height-(normalFont.Height), color.White)
+	text.Draw(screen, numFrameText, normalFont, normalFont.Width, common.DIM.Height-(normalFont.Height), color.White)
 }

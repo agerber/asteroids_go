@@ -4,7 +4,6 @@ import (
 	"container/list"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/view"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,7 +16,7 @@ type Game struct {
 
 func NewGame() *Game {
 	commandCenter := NewCommandCenter()
-	gamePanel := view.NewGamePanel(config.DIM, commandCenter)
+	gamePanel := view.NewGamePanel(common.DIM, commandCenter)
 
 	// Move to correct location
 	commandCenter.InitGame()
@@ -45,7 +44,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth int, outsideHeight int) (screenWidth int, screenHeight int) {
-	return config.DIM.Width, config.DIM.Height
+	return common.DIM.Width, common.DIM.Height
 }
 
 func (g *Game) processGameOpsQueue() {
@@ -79,13 +78,13 @@ func (g *Game) processGameOpsQueue() {
 }
 
 func (g *Game) spawnShieldFloater() {
-	if g.commandCenter.GetFrame()%config.SPAWN_SHIELD_FLOATER == 0 {
+	if g.commandCenter.GetFrame()%common.SPAWN_SHIELD_FLOATER == 0 {
 		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewShieldFloater(g.commandCenter), common.ADD)
 	}
 }
 
 func (g *Game) spawnNukeFloater() {
-	if g.commandCenter.GetFrame()%config.SPAWN_NUKE_FLOATER == 0 {
+	if g.commandCenter.GetFrame()%common.SPAWN_NUKE_FLOATER == 0 {
 		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewNukeFloater(g.commandCenter), common.ADD)
 	}
 }
