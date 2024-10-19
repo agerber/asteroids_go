@@ -2,8 +2,6 @@ package common
 
 import (
 	"container/list"
-
-	"github.com/agerber/asteroids_go/config"
 )
 
 type ICommandCenter interface {
@@ -11,7 +9,7 @@ type ICommandCenter interface {
 	GetFrame() int64
 	IncrementFrame()
 	IsGameOver() bool
-	GetUniDim() config.Dimension
+	GetUniDim() Dimension
 	IsFalconPositionFixed() bool
 	GetMovDebris() *list.List
 	GetMovFriends() *list.List

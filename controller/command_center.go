@@ -5,7 +5,6 @@ import (
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model"
 )
 
@@ -30,7 +29,7 @@ type CommandCenter struct {
 	radar      bool
 	frame      int64
 	//private final Falcon falcon  = new Falcon();
-	miniDimHash map[Universe]config.Dimension
+	miniDimHash map[Universe]common.Dimension
 	//private final MiniMap miniMap = new MiniMap();
 	movDebris    *list.List
 	movFriends   *list.List
@@ -42,7 +41,7 @@ type CommandCenter struct {
 func NewCommandCenter() *CommandCenter {
 	return &CommandCenter{
 		//new Falcon();
-		miniDimHash: make(map[Universe]config.Dimension),
+		miniDimHash: make(map[Universe]common.Dimension),
 		//new MiniMap();
 		movDebris:    list.New(),
 		movFriends:   list.New(),
@@ -81,7 +80,7 @@ func (c *CommandCenter) IsGameOver() bool {
 	return c.numFalcons < 1
 }
 
-func (c *CommandCenter) GetUniDim() config.Dimension {
+func (c *CommandCenter) GetUniDim() common.Dimension {
 	return c.miniDimHash[c.universe]
 }
 
@@ -126,12 +125,12 @@ func (c *CommandCenter) SetLevel(level int) {
 }
 
 func (c *CommandCenter) setDimHash() {
-	c.miniDimHash[FREE_FLY] = config.Dimension{Width: 1, Height: 1}
-	c.miniDimHash[CENTER] = config.Dimension{Width: 1, Height: 1}
-	c.miniDimHash[BIG] = config.Dimension{Width: 2, Height: 2}
-	c.miniDimHash[HORIZONTAL] = config.Dimension{Width: 3, Height: 1}
-	c.miniDimHash[VERTICAL] = config.Dimension{Width: 1, Height: 3}
-	c.miniDimHash[DARK] = config.Dimension{Width: 4, Height: 4}
+	c.miniDimHash[FREE_FLY] = common.Dimension{Width: 1, Height: 1}
+	c.miniDimHash[CENTER] = common.Dimension{Width: 1, Height: 1}
+	c.miniDimHash[BIG] = common.Dimension{Width: 2, Height: 2}
+	c.miniDimHash[HORIZONTAL] = common.Dimension{Width: 3, Height: 1}
+	c.miniDimHash[VERTICAL] = common.Dimension{Width: 1, Height: 3}
+	c.miniDimHash[DARK] = common.Dimension{Width: 4, Height: 4}
 }
 
 func (c *CommandCenter) generateStarField() {

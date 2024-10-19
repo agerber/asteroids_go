@@ -6,9 +6,7 @@ import (
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
-	"github.com/agerber/asteroids_go/config"
 	"github.com/agerber/asteroids_go/model/prime"
-	"github.com/agerber/asteroids_go/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -31,8 +29,8 @@ type Sprite struct {
 func NewSprite(commandCenter common.ICommandCenter) *Sprite {
 	return &Sprite{
 		center: prime.Point{
-			X: float64(utils.GenerateRandomInt(config.DIM.Width)),
-			Y: float64(utils.GenerateRandomInt(config.DIM.Height)),
+			X: float64(common.GenerateRandomInt(common.DIM.Width)),
+			Y: float64(common.GenerateRandomInt(common.DIM.Height)),
 		},
 		commandCenter: commandCenter,
 	}
@@ -42,14 +40,14 @@ func (s *Sprite) move(movable common.Movable) {
 	scalarX := s.commandCenter.GetUniDim().Width
 	scalarY := s.commandCenter.GetUniDim().Height
 
-	if s.center.X > float64(scalarX*config.DIM.Width) {
+	if s.center.X > float64(scalarX*common.DIM.Width) {
 		s.center.X = 1
 	} else if s.center.X < 0 {
-		s.center.X = float64(scalarX*config.DIM.Width) - 1
-	} else if s.center.Y > float64(scalarY*config.DIM.Height) {
+		s.center.X = float64(scalarX*common.DIM.Width) - 1
+	} else if s.center.Y > float64(scalarY*common.DIM.Height) {
 		s.center.Y = 1
 	} else if s.center.Y < 0 {
-		s.center.Y = float64(scalarY*config.DIM.Height) - 1
+		s.center.Y = float64(scalarY*common.DIM.Height) - 1
 	} else {
 		newXPos := s.center.X
 		newYPos := s.center.Y
@@ -81,25 +79,25 @@ func (s *Sprite) expire(movable common.Movable) {
 }
 
 func (s *Sprite) somePosNegValue(seed float64) float64 {
-	randomNumber := utils.GenerateRandomFloat64(seed)
-	if utils.GenerateRandomInt(2) == 0 {
+	randomNumber := common.GenerateRandomFloat64(seed)
+	if common.GenerateRandomInt(2) == 0 {
 		return randomNumber
 	}
 	return -randomNumber
 }
 
 func (s *Sprite) renderVector(screen *ebiten.Image) {
-	polars := utils.CartesiansToPolars(s.cartesians)
+	polars := common.CartesiansToPolars(s.cartesians)
 
 	var points []prime.Point
 	for _, p := range polars {
-		rotated := utils.RotatePolarByOrientation(p, s.orientation)
-		cartesian := utils.PolarToCartesian(rotated, s.radius)
-		adjusted := utils.AdjustForLocation(cartesian, s.center)
+		rotated := common.RotatePolarByOrientation(p, s.orientation)
+		cartesian := common.PolarToCartesian(rotated, s.radius)
+		adjusted := common.AdjustForLocation(cartesian, s.center)
 		points = append(points, adjusted)
 	}
 
-	utils.DrawPolygon(screen, points, s.color)
+	common.DrawPolygon(screen, points, s.color)
 }
 
 func (s *Sprite) addToGame(list *list.List, movable common.Movable) {
