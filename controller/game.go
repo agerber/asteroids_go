@@ -32,6 +32,7 @@ func NewGame() *Game {
 
 func (g *Game) Update() error {
 	g.checkNewLevel()
+	g.checkFloaters()
 	g.processGameOpsQueue()
 	// keep track of the frame for development purposes
 	g.commandCenter.IncrementFrame()
@@ -75,6 +76,23 @@ func (g *Game) processGameOpsQueue() {
 			return
 		}
 	}
+}
+
+func (g *Game) spawnShieldFloater() {
+	if g.commandCenter.GetFrame()%config.SPAWN_SHIELD_FLOATER == 0 {
+		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewShieldFloater(g.commandCenter), common.ADD)
+	}
+}
+
+func (g *Game) spawnNukeFloater() {
+	if g.commandCenter.GetFrame()%config.SPAWN_NUKE_FLOATER == 0 {
+		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewNukeFloater(g.commandCenter), common.ADD)
+	}
+}
+
+func (g *Game) checkFloaters() {
+	g.spawnShieldFloater()
+	g.spawnNukeFloater()
 }
 
 func (g *Game) spawnBigAsteroids(num int) {
