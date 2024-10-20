@@ -13,11 +13,9 @@ import (
 type Star struct {
 	center prime.Point
 	color  color.RGBA
-
-	commandCenter common.ICommandCenter
 }
 
-func NewStar(commandCenter common.ICommandCenter) common.Movable {
+func NewStar() common.Movable {
 	bright := uint8(common.GenerateRandomInt(226))
 
 	return &Star{
@@ -31,7 +29,6 @@ func NewStar(commandCenter common.ICommandCenter) common.Movable {
 			B: bright,
 			A: 255,
 		},
-		commandCenter: commandCenter,
 	}
 }
 

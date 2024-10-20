@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	common.SetCommandCenterInstance(controller.NewCommandCenter())
 	ebiten.SetWindowSize(common.DIM.Width, common.DIM.Height)
 	ebiten.SetWindowTitle(common.WINDOW_TITLE)
 	if err := ebiten.RunGame(controller.NewGame()); err != nil {

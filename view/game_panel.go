@@ -24,11 +24,9 @@ var (
 type GamePanel struct {
 	dim                 common.Dimension
 	pointShipsRemaining []prime.Point
-
-	commandCenter common.ICommandCenter
 }
 
-func NewGamePanel(dim common.Dimension, commandCenter common.ICommandCenter) *GamePanel {
+func NewGamePanel(dim common.Dimension) *GamePanel {
 	// Robert Alef's awesome falcon design
 	pointShipsRemaining := make([]prime.Point, 0, 36)
 	pointShipsRemaining = append(pointShipsRemaining, prime.Point{X: 0, Y: 9})
@@ -71,17 +69,16 @@ func NewGamePanel(dim common.Dimension, commandCenter common.ICommandCenter) *Ga
 	return &GamePanel{
 		dim:                 dim,
 		pointShipsRemaining: pointShipsRemaining,
-		commandCenter:       commandCenter,
 	}
 }
 
 func (g *GamePanel) Draw(screen *ebiten.Image) {
 	g.drawNumFrame(screen)
 	g.moveDrawMovables(screen,
-		g.commandCenter.GetMovDebris(),
-		g.commandCenter.GetMovFriends(),
-		g.commandCenter.GetMovFoes(),
-		g.commandCenter.GetMovFloaters())
+		common.GetCommandCenterInstance().GetMovDebris(),
+		common.GetCommandCenterInstance().GetMovFriends(),
+		common.GetCommandCenterInstance().GetMovFoes(),
+		common.GetCommandCenterInstance().GetMovFloaters())
 	g.drawNumberShipsRemaining(screen)
 }
 
@@ -143,6 +140,6 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 var normalFont = basicfont.Face7x13
 
 func (g *GamePanel) drawNumFrame(screen *ebiten.Image) {
-	numFrameText := fmt.Sprintf("FRAME[GO]:%d", g.commandCenter.GetFrame())
+	numFrameText := fmt.Sprintf("FRAME[GO]:%d", common.GetCommandCenterInstance().GetFrame())
 	text.Draw(screen, numFrameText, normalFont, normalFont.Width, common.DIM.Height-(normalFont.Height), color.White)
 }
