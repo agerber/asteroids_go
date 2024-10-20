@@ -12,14 +12,11 @@ import (
 
 type Asteroid struct {
 	*Sprite
-
-	commandCenter common.ICommandCenter
 }
 
-func NewAsteroid(size int, commandCenter common.ICommandCenter) *Asteroid {
+func NewAsteroid(size int) *Asteroid {
 	asteroid := &Asteroid{
-		Sprite:        NewSprite(commandCenter),
-		commandCenter: commandCenter,
+		Sprite: NewSprite(),
 	}
 
 	if size == 0 {
@@ -40,7 +37,7 @@ func NewAsteroid(size int, commandCenter common.ICommandCenter) *Asteroid {
 func NewAsteroidFromExisting(astExploded *Asteroid) *Asteroid {
 	newSmallerSize := astExploded.getSize() + 1
 
-	newAsteroid := NewAsteroid(newSmallerSize, astExploded.commandCenter)
+	newAsteroid := NewAsteroid(newSmallerSize)
 	newAsteroid.center = astExploded.center
 	newAsteroid.deltaX = astExploded.deltaX/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2))
 	newAsteroid.deltaY = astExploded.deltaY/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2))
@@ -76,7 +73,7 @@ func (a *Asteroid) RemoveFromGame(list *list.List) {
 	a.removeFromGame(list, a)
 
 	a.spawnSmallerAsteroidsOrDebris()
-	a.commandCenter.SetScore(a.commandCenter.GetScore() + 10*(int64(a.getSize())+1))
+	common.GetCommandCenterInstance().SetScore(common.GetCommandCenterInstance().GetScore() + 10*(int64(a.getSize())+1))
 
 	if a.getSize() > 1 {
 		//SoundLoader.playSound("pillow.wav")
@@ -131,7 +128,7 @@ func (a *Asteroid) spawnSmallerAsteroidsOrDebris() {
 		size += 2
 		for size > 0 {
 			// Add new Asteroid to the game
-			a.commandCenter.GetGameOpsQueue().Enqueue(NewAsteroidFromExisting(a), common.ADD)
+			common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(NewAsteroidFromExisting(a), common.ADD)
 			size--
 		}
 	}

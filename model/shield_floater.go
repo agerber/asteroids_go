@@ -15,9 +15,9 @@ type ShieldFloater struct {
 	*Floater
 }
 
-func NewShieldFloater(commandCenter common.ICommandCenter) common.Movable {
+func NewShieldFloater() common.Movable {
 	shieldFloater := &ShieldFloater{
-		Floater: NewFloater(commandCenter),
+		Floater: NewFloater(),
 	}
 
 	shieldFloater.color = CyanColor

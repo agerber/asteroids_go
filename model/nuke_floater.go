@@ -15,9 +15,9 @@ type NukeFloater struct {
 	*Floater
 }
 
-func NewNukeFloater(commandCenter common.ICommandCenter) common.Movable {
+func NewNukeFloater() common.Movable {
 	nukeFloater := &NukeFloater{
-		Floater: NewFloater(commandCenter),
+		Floater: NewFloater(),
 	}
 
 	nukeFloater.color = YellowColor

@@ -11,9 +11,9 @@ type Floater struct {
 	*Sprite
 }
 
-func NewFloater(commandCenter common.ICommandCenter) *Floater {
+func NewFloater() *Floater {
 	floater := &Floater{
-		Sprite: NewSprite(commandCenter),
+		Sprite: NewSprite(),
 	}
 
 	floater.team = common.FLOATER

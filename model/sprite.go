@@ -22,23 +22,20 @@ type Sprite struct {
 	cartesians  []prime.Point
 	color       color.Color
 	//private Map<?, BufferedImage> rasterMap;
-
-	commandCenter common.ICommandCenter
 }
 
-func NewSprite(commandCenter common.ICommandCenter) *Sprite {
+func NewSprite() *Sprite {
 	return &Sprite{
 		center: prime.Point{
 			X: float64(common.GenerateRandomInt(common.DIM.Width)),
 			Y: float64(common.GenerateRandomInt(common.DIM.Height)),
 		},
-		commandCenter: commandCenter,
 	}
 }
 
 func (s *Sprite) move(movable common.Movable) {
-	scalarX := s.commandCenter.GetUniDim().Width
-	scalarY := s.commandCenter.GetUniDim().Height
+	scalarX := common.GetCommandCenterInstance().GetUniDim().Width
+	scalarY := common.GetCommandCenterInstance().GetUniDim().Height
 
 	if s.center.X > float64(scalarX*common.DIM.Width) {
 		s.center.X = 1
@@ -72,7 +69,7 @@ func (s *Sprite) move(movable common.Movable) {
 
 func (s *Sprite) expire(movable common.Movable) {
 	if s.expiry == 1 {
-		s.commandCenter.GetGameOpsQueue().Enqueue(movable, common.REMOVE)
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(movable, common.REMOVE)
 		return
 	}
 	s.expiry--

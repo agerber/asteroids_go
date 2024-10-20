@@ -2,7 +2,6 @@ package controller
 
 import (
 	"container/list"
-
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/view"
@@ -10,22 +9,19 @@ import (
 )
 
 type Game struct {
-	commandCenter common.ICommandCenter
-	gamePanel     *view.GamePanel
+	gamePanel *view.GamePanel
 }
 
 func NewGame() *Game {
-	commandCenter := NewCommandCenter()
-	gamePanel := view.NewGamePanel(common.DIM, commandCenter)
+	gamePanel := view.NewGamePanel(common.DIM)
 
 	// Move to correct location
-	commandCenter.InitGame()
+	common.GetCommandCenterInstance().InitGame()
 	// TODO: remove it
-	commandCenter.SetLevel(5)
+	common.GetCommandCenterInstance().SetLevel(5)
 
 	return &Game{
-		commandCenter: commandCenter,
-		gamePanel:     gamePanel,
+		gamePanel: gamePanel,
 	}
 }
 
@@ -34,7 +30,7 @@ func (g *Game) Update() error {
 	g.checkFloaters()
 	g.processGameOpsQueue()
 	// keep track of the frame for development purposes
-	g.commandCenter.IncrementFrame()
+	common.GetCommandCenterInstance().IncrementFrame()
 
 	return nil
 }
@@ -50,17 +46,17 @@ func (g *Game) Layout(outsideWidth int, outsideHeight int) (screenWidth int, scr
 func (g *Game) processGameOpsQueue() {
 	for {
 		select {
-		case gameOp := <-g.commandCenter.GetGameOpsQueue().Dequeue():
+		case gameOp := <-common.GetCommandCenterInstance().GetGameOpsQueue().Dequeue():
 			var list *list.List
 			switch gameOp.Movable.GetTeam() {
 			case common.FOE:
-				list = g.commandCenter.GetMovFoes()
+				list = common.GetCommandCenterInstance().GetMovFoes()
 			case common.FRIEND:
-				list = g.commandCenter.GetMovFriends()
+				list = common.GetCommandCenterInstance().GetMovFriends()
 			case common.FLOATER:
-				list = g.commandCenter.GetMovFloaters()
+				list = common.GetCommandCenterInstance().GetMovFloaters()
 			case common.DEBRIS:
-				list = g.commandCenter.GetMovDebris()
+				list = common.GetCommandCenterInstance().GetMovDebris()
 			default:
 				return
 			}
@@ -78,14 +74,14 @@ func (g *Game) processGameOpsQueue() {
 }
 
 func (g *Game) spawnShieldFloater() {
-	if g.commandCenter.GetFrame()%common.SPAWN_SHIELD_FLOATER == 0 {
-		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewShieldFloater(g.commandCenter), common.ADD)
+	if common.GetCommandCenterInstance().GetFrame()%common.SPAWN_SHIELD_FLOATER == 0 {
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewShieldFloater(), common.ADD)
 	}
 }
 
 func (g *Game) spawnNukeFloater() {
-	if g.commandCenter.GetFrame()%common.SPAWN_NUKE_FLOATER == 0 {
-		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewNukeFloater(g.commandCenter), common.ADD)
+	if common.GetCommandCenterInstance().GetFrame()%common.SPAWN_NUKE_FLOATER == 0 {
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewNukeFloater(), common.ADD)
 	}
 }
 
@@ -96,13 +92,13 @@ func (g *Game) checkFloaters() {
 
 func (g *Game) spawnBigAsteroids(num int) {
 	for i := 0; i < num; i++ {
-		g.commandCenter.GetGameOpsQueue().Enqueue(model.NewAsteroid(0, g.commandCenter), common.ADD)
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewAsteroid(0), common.ADD)
 	}
 }
 
 func (g *Game) isLevelClear() bool {
 	// If there are no more Asteroids on the screen
-	for e := g.commandCenter.GetMovFoes().Front(); e != nil; e = e.Next() {
+	for e := common.GetCommandCenterInstance().GetMovFoes().Front(); e != nil; e = e.Next() {
 		if _, ok := e.Value.(*model.Asteroid); ok {
 			return false
 		}
@@ -115,7 +111,7 @@ func (g *Game) checkNewLevel() {
 		return
 	}
 
-	level := g.commandCenter.GetLevel()
+	level := common.GetCommandCenterInstance().GetLevel()
 
 	level++
 	g.spawnBigAsteroids(level)

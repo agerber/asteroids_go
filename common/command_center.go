@@ -2,6 +2,7 @@ package common
 
 import (
 	"container/list"
+	"sync"
 )
 
 type ICommandCenter interface {
@@ -20,4 +21,16 @@ type ICommandCenter interface {
 	SetScore(score int64)
 	GetLevel() int
 	SetLevel(level int)
+}
+
+var singletonCommandCenter ICommandCenter
+
+func SetCommandCenterInstance(commandCenter ICommandCenter) {
+	sync.OnceFunc(func() {
+		singletonCommandCenter = commandCenter
+	})()
+}
+
+func GetCommandCenterInstance() ICommandCenter {
+	return singletonCommandCenter
 }

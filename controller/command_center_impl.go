@@ -135,7 +135,7 @@ func (c *CommandCenter) setDimHash() {
 
 func (c *CommandCenter) generateStarField() {
 	for i := 0; i < 100; i++ {
-		c.gameOpsQueue.Enqueue(model.NewStar(c), common.ADD)
+		c.gameOpsQueue.Enqueue(model.NewStar(), common.ADD)
 	}
 }
 
