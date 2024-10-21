@@ -21,6 +21,9 @@ type ICommandCenter interface {
 	SetScore(score int64)
 	GetLevel() int
 	SetLevel(level int)
+	GetFalcon() IFalcon
+	GetNumFalcons() int
+	SetNumFalcons(numFalcons int)
 }
 
 var singletonCommandCenter ICommandCenter
