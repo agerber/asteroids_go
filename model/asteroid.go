@@ -31,6 +31,9 @@ func NewAsteroid(size int) *Asteroid {
 	asteroid.deltaY = asteroid.somePosNegValue(4)
 	asteroid.cartesians = asteroid.generateVertices()
 
+	// TODO: remove this
+	asteroid.expiry = 400
+
 	return asteroid
 }
 
@@ -121,8 +124,7 @@ func (a *Asteroid) spawnSmallerAsteroidsOrDebris() {
 	size := a.getSize()
 
 	if size > 1 {
-		// Add WhiteCloudDebris to the game
-		//a.commandCenter.GetGameOpsQueue().Enqueue(NewWhiteCloudDebris(a), common.ADD)
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(NewWhiteCloudDebris(a.Sprite), common.ADD)
 	} else {
 		// For large (0) and medium (1) sized Asteroids only, spawn 2 or 3 smaller asteroids respectively
 		size += 2

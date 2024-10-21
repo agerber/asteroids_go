@@ -21,8 +21,7 @@ func NewShieldFloater() common.Movable {
 	}
 
 	shieldFloater.color = CyanColor
-	shieldFloater.expiry = 0
-	//shieldFloater.expiry = 260
+	shieldFloater.expiry = 600
 
 	return shieldFloater
 }

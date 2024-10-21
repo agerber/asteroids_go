@@ -21,8 +21,7 @@ func NewNukeFloater() common.Movable {
 	}
 
 	nukeFloater.color = YellowColor
-	nukeFloater.expiry = 0
-	//nukeFloater.expiry = 120
+	nukeFloater.expiry = 278
 
 	return nukeFloater
 }
