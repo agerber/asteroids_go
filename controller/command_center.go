@@ -58,8 +58,9 @@ func (c *CommandCenter) InitGame() {
 	c.level = 0
 	c.score = 0
 	c.paused = false
+	//set to one greater than number of falcons lives in your game as decrementFalconNumAndSpawn() also decrements
 	c.numFalcons = 4
-	//falcon.decrementFalconNumAndSpawn()
+	c.falcon.DecrementFalconNumAndSpawn()
 	c.gameOpsQueue.Enqueue(c.falcon, common.ADD)
 	//opsQueue.enqueue(miniMap, GameOp.Action.ADD)
 }

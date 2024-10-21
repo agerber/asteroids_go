@@ -88,26 +88,26 @@ func (s *Sprite) renderRaster(screen *ebiten.Image, bufferedImage *ebiten.Image)
 		return
 	}
 
-	centerX := s.center.X
-	centerY := s.center.Y
 	width := s.radius * 2
 	height := s.radius * 2
-	angleRadians := s.orientation * math.Pi / 180
 
-	scaleX := float64(width) / float64(bufferedImage.Bounds().Dx())
-	scaleY := float64(height) / float64(bufferedImage.Bounds().Dy())
+	angleRadians := s.orientation * math.Pi / 180
 
 	drawOption := &ebiten.DrawImageOptions{}
 
+	// Translate to the center
+	drawOption.GeoM.Translate(-float64(bufferedImage.Bounds().Dx())/2, -float64(bufferedImage.Bounds().Dy())/2)
+
 	// Apply scaling
+	scaleX := float64(width) / float64(bufferedImage.Bounds().Dx())
+	scaleY := float64(height) / float64(bufferedImage.Bounds().Dy())
 	drawOption.GeoM.Scale(scaleX, scaleY)
 
 	// Apply rotation
 	drawOption.GeoM.Rotate(angleRadians)
 
-	// Move the image's center to the screen's center
-	drawOption.GeoM.Translate(float64(-bufferedImage.Bounds().Dx()/2), float64(-bufferedImage.Bounds().Dy()/2))
-	drawOption.GeoM.Translate(float64(centerX), float64(centerY))
+	// Translate back
+	drawOption.GeoM.Translate(s.center.X, s.center.Y)
 
 	screen.DrawImage(bufferedImage, drawOption)
 }

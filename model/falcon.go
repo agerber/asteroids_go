@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	TURN_STEP          = 11
+	TURN_STEP          = 5
 	INITIAL_SPAWN_TIME = 48
 	MAX_SHIELD         = 200
 	MAX_NUKE           = 600
@@ -123,6 +123,11 @@ func (f *Falcon) Move() {
 }
 
 func (f *Falcon) Draw(screen *ebiten.Image) {
+	// TODO: remove this
+	f.nukeMeter = 1
+	f.invisible = 0
+	f.shield = 1
+
 	if f.nukeMeter > 0 {
 		f.drawNukeHalo(screen)
 	}
@@ -168,7 +173,7 @@ func (f *Falcon) RemoveFromGame(list *list.List) {
 	// The falcon is never actually removed from the game-space; instead we decrement numFalcons
 	// only execute the decrementFalconNumAndSpawn() method if shield is down.
 	if f.shield == 0 {
-		f.decrementFalconNumAndSpawn()
+		f.DecrementFalconNumAndSpawn()
 	}
 }
 
@@ -181,7 +186,7 @@ func (f *Falcon) GetDeltaY() float64 {
 }
 
 func (f *Falcon) drawShieldHalo(screen *ebiten.Image) {
-	vector.StrokeCircle(screen, float32(f.center.X)-float32(f.radius)+10, float32(f.center.Y)-float32(f.radius)+10, float32(f.radius), 1, CyanColor, false)
+	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius), 1, CyanColor, false)
 }
 
 func (f *Falcon) drawNukeHalo(screen *ebiten.Image) {
@@ -189,10 +194,10 @@ func (f *Falcon) drawNukeHalo(screen *ebiten.Image) {
 		return
 	}
 
-	vector.StrokeCircle(screen, float32(f.center.X)-float32(f.radius)+10, float32(f.center.Y)-float32(f.radius)+10, float32(f.radius)-10, 1, YellowColor, false)
+	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius)-10, 1, YellowColor, false)
 }
 
-func (f *Falcon) decrementFalconNumAndSpawn() {
+func (f *Falcon) DecrementFalconNumAndSpawn() {
 	common.GetCommandCenterInstance().SetNumFalcons(common.GetCommandCenterInstance().GetNumFalcons() - 1)
 	if common.GetCommandCenterInstance().IsGameOver() {
 		return

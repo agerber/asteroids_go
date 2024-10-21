@@ -20,9 +20,9 @@ func NewFloater() *Floater {
 	floater.expiry = 250
 	floater.color = color.White
 	floater.radius = 50
-	floater.spin = floater.somePosNegValue(2)
-	floater.deltaX = floater.somePosNegValue(5)
-	floater.deltaY = floater.somePosNegValue(5)
+	floater.spin = floater.somePosNegValue(4)
+	floater.deltaX = floater.somePosNegValue(4)
+	floater.deltaY = floater.somePosNegValue(4)
 
 	listPoints := []prime.Point{
 		{X: 5, Y: 5},
