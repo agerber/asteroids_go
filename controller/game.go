@@ -18,7 +18,7 @@ func NewGame() *Game {
 	// Move to correct location
 	common.GetCommandCenterInstance().InitGame()
 	// TODO: remove it
-	common.GetCommandCenterInstance().SetLevel(5)
+	common.GetCommandCenterInstance().SetLevel(1)
 
 	return &Game{
 		gamePanel: gamePanel,

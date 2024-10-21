@@ -17,4 +17,5 @@ type IFalcon interface {
 	RemoveFromGame(list *list.List)
 	GetDeltaX() float64
 	GetDeltaY() float64
+	DecrementFalconNumAndSpawn()
 }
