@@ -26,7 +26,7 @@ func NewAsteroid(size int) *Asteroid {
 	}
 	asteroid.team = common.FOE
 	asteroid.color = color.White
-	asteroid.spin = asteroid.somePosNegValue(0.05)
+	asteroid.spin = asteroid.somePosNegValue(2)
 	asteroid.deltaX = asteroid.somePosNegValue(5)
 	asteroid.deltaY = asteroid.somePosNegValue(5)
 	asteroid.cartesians = asteroid.generateVertices()
