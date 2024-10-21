@@ -20,7 +20,7 @@ func NewFloater() *Floater {
 	floater.expiry = 250
 	floater.color = color.White
 	floater.radius = 50
-	floater.spin = floater.somePosNegValue(0.05)
+	floater.spin = floater.somePosNegValue(2)
 	floater.deltaX = floater.somePosNegValue(5)
 	floater.deltaY = floater.somePosNegValue(5)
 

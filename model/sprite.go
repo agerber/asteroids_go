@@ -21,7 +21,7 @@ type Sprite struct {
 	spin        float64
 	cartesians  []prime.Point
 	color       color.Color
-	//private Map<?, BufferedImage> rasterMap;
+	rasterMap   map[interface{}]*ebiten.Image
 }
 
 func NewSprite() *Sprite {
@@ -49,10 +49,10 @@ func (s *Sprite) move(movable common.Movable) {
 		newXPos := s.center.X
 		newYPos := s.center.Y
 
-		//if GetCommandCenterInstance().FalconPositionFixed {
-		//	newXPos -= GetCommandCenterInstance().Falcon.DeltaX
-		//	newYPos -= GetCommandCenterInstance().Falcon.DeltaY
-		//}
+		if common.GetCommandCenterInstance().IsFalconPositionFixed() {
+			newXPos -= common.GetCommandCenterInstance().GetFalcon().GetDeltaX()
+			newYPos -= common.GetCommandCenterInstance().GetFalcon().GetDeltaY()
+		}
 
 		s.center.X = math.Round(newXPos + s.deltaX)
 		s.center.Y = math.Round(newYPos + s.deltaX)
@@ -83,12 +83,42 @@ func (s *Sprite) somePosNegValue(seed float64) float64 {
 	return -randomNumber
 }
 
+func (s *Sprite) renderRaster(screen *ebiten.Image, bufferedImage *ebiten.Image) {
+	if bufferedImage == nil {
+		return
+	}
+
+	centerX := s.center.X
+	centerY := s.center.Y
+	width := s.radius * 2
+	height := s.radius * 2
+	angleRadians := s.orientation * math.Pi / 180
+
+	scaleX := float64(width) / float64(bufferedImage.Bounds().Dx())
+	scaleY := float64(height) / float64(bufferedImage.Bounds().Dy())
+
+	drawOption := &ebiten.DrawImageOptions{}
+
+	// Apply scaling
+	drawOption.GeoM.Scale(scaleX, scaleY)
+
+	// Apply rotation
+	drawOption.GeoM.Rotate(angleRadians)
+
+	// Move the image's center to the screen's center
+	drawOption.GeoM.Translate(float64(-bufferedImage.Bounds().Dx()/2), float64(-bufferedImage.Bounds().Dy()/2))
+	drawOption.GeoM.Translate(float64(centerX), float64(centerY))
+
+	screen.DrawImage(bufferedImage, drawOption)
+}
+
 func (s *Sprite) renderVector(screen *ebiten.Image) {
 	polars := common.CartesiansToPolars(s.cartesians)
+	angleRadians := s.orientation * math.Pi / 180
 
 	var points []prime.Point
 	for _, p := range polars {
-		rotated := common.RotatePolarByOrientation(p, s.orientation)
+		rotated := common.RotatePolarByOrientation(p, angleRadians)
 		cartesian := common.PolarToCartesian(rotated, s.radius)
 		adjusted := common.AdjustForLocation(cartesian, s.center)
 		points = append(points, adjusted)
