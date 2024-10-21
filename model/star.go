@@ -49,7 +49,9 @@ func (s *Star) GetTeam() common.Team {
 }
 
 func (s *Star) Move() {
-	//if (!CommandCenter.getInstance().isFalconPositionFixed()) return;
+	if !common.GetCommandCenterInstance().IsFalconPositionFixed() {
+		return
+	}
 
 	if s.center.X > float64(common.DIM.Width) {
 		s.center.X = 1
@@ -60,10 +62,9 @@ func (s *Star) Move() {
 	} else if s.center.Y < 0 {
 		s.center.Y = float64(common.DIM.Height - 1)
 	} else {
-		s.center.X += 1
-		s.center.Y += 1
-		//center.x = (int) Math.round(center.x - CommandCenter.getInstance().getFalcon().getDeltaX());
-		//center.y = (int) Math.round(center.y - CommandCenter.getInstance().getFalcon().getDeltaY());
+		//move star in opposite direction of falcon.
+		s.center.X -= common.GetCommandCenterInstance().GetFalcon().GetDeltaX()
+		s.center.Y -= common.GetCommandCenterInstance().GetFalcon().GetDeltaY()
 	}
 }
 

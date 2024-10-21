@@ -20,15 +20,15 @@ const (
 )
 
 type CommandCenter struct {
-	universe   Universe
-	numFalcons int
-	level      int
-	score      int64
-	paused     bool
-	themeMusic bool
-	radar      bool
-	frame      int64
-	//private final Falcon falcon  = new Falcon();
+	universe    Universe
+	numFalcons  int
+	level       int
+	score       int64
+	paused      bool
+	themeMusic  bool
+	radar       bool
+	frame       int64
+	falcon      common.IFalcon
 	miniDimHash map[Universe]common.Dimension
 	//private final MiniMap miniMap = new MiniMap();
 	movDebris    *list.List
@@ -40,7 +40,7 @@ type CommandCenter struct {
 
 func NewCommandCenter() *CommandCenter {
 	return &CommandCenter{
-		//new Falcon();
+		falcon:      model.NewFalcon(),
 		miniDimHash: make(map[Universe]common.Dimension),
 		//new MiniMap();
 		movDebris:    list.New(),
@@ -60,7 +60,7 @@ func (c *CommandCenter) InitGame() {
 	c.paused = false
 	c.numFalcons = 4
 	//falcon.decrementFalconNumAndSpawn()
-	//opsQueue.enqueue(falcon, GameOp.Action.ADD)
+	c.gameOpsQueue.Enqueue(c.falcon, common.ADD)
 	//opsQueue.enqueue(miniMap, GameOp.Action.ADD)
 }
 
@@ -122,6 +122,18 @@ func (c *CommandCenter) GetLevel() int {
 
 func (c *CommandCenter) SetLevel(level int) {
 	c.level = level
+}
+
+func (c *CommandCenter) GetFalcon() common.IFalcon {
+	return c.falcon
+}
+
+func (c *CommandCenter) GetNumFalcons() int {
+	return c.numFalcons
+}
+
+func (c *CommandCenter) SetNumFalcons(numFalcons int) {
+	c.numFalcons = numFalcons
 }
 
 func (c *CommandCenter) setDimHash() {
