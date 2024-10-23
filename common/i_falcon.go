@@ -28,4 +28,7 @@ type IFalcon interface {
 	DecrementFalconNumAndSpawn()
 	SetThrusting(thrusting bool)
 	SetTurnState(turnState TurnState)
+	GetOrientation() float64
+	SetDeltaX(deltaX float64)
+	SetDeltaY(deltaY float64)
 }

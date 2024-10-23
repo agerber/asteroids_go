@@ -104,7 +104,7 @@ func (g *Game) checkPressedKey() {
 
 	switch {
 	case ebiten.IsKeyPressed(ebiten.KeySpace):
-		//CommandCenter.getInstance().getOpsQueue().enqueue(new Bullet(falcon), GameOp.Action.ADD);
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewBullet(falcon), common.ADD)
 	case ebiten.IsKeyPressed(ebiten.KeyF):
 		//CommandCenter.getInstance().getOpsQueue().enqueue(new Nuke(falcon), GameOp.Action.ADD);
 	case ebiten.IsKeyPressed(ebiten.KeyUp):
