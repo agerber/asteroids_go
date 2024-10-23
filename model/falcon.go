@@ -224,3 +224,11 @@ func (f *Falcon) SetDeltaX(deltaX float64) {
 func (f *Falcon) SetDeltaY(deltaY float64) {
 	f.deltaY = deltaY
 }
+
+func (f *Falcon) GetNukeMeter() int {
+	return f.nukeMeter
+}
+
+func (f *Falcon) SetNukeMeter(nukeMeter int) {
+	f.nukeMeter = nukeMeter
+}

@@ -106,7 +106,7 @@ func (g *Game) checkPressedKey() {
 	case ebiten.IsKeyPressed(ebiten.KeySpace):
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewBullet(falcon), common.ADD)
 	case ebiten.IsKeyPressed(ebiten.KeyF):
-		//CommandCenter.getInstance().getOpsQueue().enqueue(new Nuke(falcon), GameOp.Action.ADD);
+		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewNuke(falcon), common.ADD)
 	case ebiten.IsKeyPressed(ebiten.KeyUp):
 		falcon.SetThrusting(true)
 		common.PlaySound("whitenoise_loop.wav")
