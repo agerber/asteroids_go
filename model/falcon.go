@@ -194,7 +194,7 @@ func (f *Falcon) DecrementFalconNumAndSpawn() {
 	if common.GetCommandCenterInstance().IsGameOver() {
 		return
 	}
-	//SoundLoader.playSound("shipspawn.wav");
+	common.PlaySound("shipspawn.wav")
 	f.shield = INITIAL_SPAWN_TIME
 	f.invisible = INITIAL_SPAWN_TIME / 5
 	f.orientation = common.GenerateRandomFloat64(360/TURN_STEP) * TURN_STEP

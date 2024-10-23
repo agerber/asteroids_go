@@ -109,7 +109,7 @@ func (g *Game) checkPressedKey() {
 		//CommandCenter.getInstance().getOpsQueue().enqueue(new Nuke(falcon), GameOp.Action.ADD);
 	case ebiten.IsKeyPressed(ebiten.KeyUp):
 		falcon.SetThrusting(true)
-		//SoundLoader.playSound("whitenoise_loop.wav");
+		common.PlaySound("whitenoise_loop.wav")
 	case ebiten.IsKeyPressed(ebiten.KeyLeft):
 		falcon.SetTurnState(common.LEFT)
 	case ebiten.IsKeyPressed(ebiten.KeyRight):
@@ -130,18 +130,19 @@ func (g *Game) checkReleasedKey() {
 		falcon.SetTurnState(common.IDLE)
 	case inpututil.IsKeyJustReleased(ebiten.KeyUp):
 		falcon.SetThrusting(false)
-		//SoundLoader.stopSound("whitenoise_loop.wav")
+		common.StopSound("whitenoise_loop.wav")
 	case inpututil.IsKeyJustReleased(ebiten.KeyP):
 		commandCenter.SetPaused(!commandCenter.IsPaused())
 	case inpututil.IsKeyJustReleased(ebiten.KeyQ):
+		common.CloseSound()
 		os.Exit(0)
 	case inpututil.IsKeyJustReleased(ebiten.KeyA):
 		commandCenter.SetRadar(!commandCenter.IsRadar())
 	case inpututil.IsKeyJustReleased(ebiten.KeyM):
 		if commandCenter.IsThemeMusic() {
-			//SoundLoader.stopSound("dr_loop.wav")
+			common.StopSound("dr_loop.wav")
 		} else {
-			//SoundLoader.playSound("dr_loop.wav");
+			common.PlaySound("dr_loop.wav")
 		}
 		commandCenter.SetThemeMusic(!commandCenter.IsThemeMusic())
 	}

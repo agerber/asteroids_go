@@ -79,9 +79,9 @@ func (a *Asteroid) RemoveFromGame(list *list.List) {
 	common.GetCommandCenterInstance().SetScore(common.GetCommandCenterInstance().GetScore() + 10*(int64(a.getSize())+1))
 
 	if a.getSize() > 1 {
-		//SoundLoader.playSound("pillow.wav")
+		common.PlaySound("pillow.wav")
 	} else {
-		//SoundLoader.playSound("kapow.wav");
+		common.PlaySound("kapow.wav")
 	}
 }
 
