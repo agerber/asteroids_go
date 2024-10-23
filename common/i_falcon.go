@@ -7,6 +7,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type TurnState int
+
+const (
+	IDLE TurnState = iota
+	LEFT
+	RIGHT
+)
+
 type IFalcon interface {
 	Move()
 	Draw(screen *ebiten.Image)
@@ -18,4 +26,6 @@ type IFalcon interface {
 	GetDeltaX() float64
 	GetDeltaY() float64
 	DecrementFalconNumAndSpawn()
+	SetThrusting(thrusting bool)
+	SetTurnState(turnState TurnState)
 }

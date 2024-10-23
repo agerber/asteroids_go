@@ -137,6 +137,30 @@ func (c *CommandCenter) SetNumFalcons(numFalcons int) {
 	c.numFalcons = numFalcons
 }
 
+func (c *CommandCenter) IsPaused() bool {
+	return c.paused
+}
+
+func (c *CommandCenter) SetPaused(paused bool) {
+	c.paused = paused
+}
+
+func (c *CommandCenter) IsRadar() bool {
+	return c.radar
+}
+
+func (c *CommandCenter) SetRadar(radar bool) {
+	c.radar = radar
+}
+
+func (c *CommandCenter) IsThemeMusic() bool {
+	return c.themeMusic
+}
+
+func (c *CommandCenter) SetThemeMusic(themeMusic bool) {
+	c.themeMusic = themeMusic
+}
+
 func (c *CommandCenter) setDimHash() {
 	c.miniDimHash[FREE_FLY] = common.Dimension{Width: 1, Height: 1}
 	c.miniDimHash[CENTER] = common.Dimension{Width: 1, Height: 1}

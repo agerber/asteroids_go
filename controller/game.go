@@ -2,10 +2,13 @@ package controller
 
 import (
 	"container/list"
+	"os"
+
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/view"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Game struct {
@@ -15,8 +18,6 @@ type Game struct {
 func NewGame() *Game {
 	gamePanel := view.NewGamePanel(common.DIM)
 
-	// Move to correct location
-	common.GetCommandCenterInstance().InitGame()
 	// TODO: remove it
 	common.GetCommandCenterInstance().SetLevel(1)
 
@@ -26,6 +27,8 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	g.checkPressedKey()
+	g.checkReleasedKey()
 	g.checkNewLevel()
 	g.checkFloaters()
 	g.processGameOpsQueue()
@@ -93,6 +96,54 @@ func (g *Game) checkFloaters() {
 func (g *Game) spawnBigAsteroids(num int) {
 	for i := 0; i < num; i++ {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewAsteroid(0), common.ADD)
+	}
+}
+
+func (g *Game) checkPressedKey() {
+	falcon := common.GetCommandCenterInstance().GetFalcon()
+
+	switch {
+	case ebiten.IsKeyPressed(ebiten.KeySpace):
+		//CommandCenter.getInstance().getOpsQueue().enqueue(new Bullet(falcon), GameOp.Action.ADD);
+	case ebiten.IsKeyPressed(ebiten.KeyF):
+		//CommandCenter.getInstance().getOpsQueue().enqueue(new Nuke(falcon), GameOp.Action.ADD);
+	case ebiten.IsKeyPressed(ebiten.KeyUp):
+		falcon.SetThrusting(true)
+		//SoundLoader.playSound("whitenoise_loop.wav");
+	case ebiten.IsKeyPressed(ebiten.KeyLeft):
+		falcon.SetTurnState(common.LEFT)
+	case ebiten.IsKeyPressed(ebiten.KeyRight):
+		falcon.SetTurnState(common.RIGHT)
+	}
+}
+
+func (g *Game) checkReleasedKey() {
+	falcon := common.GetCommandCenterInstance().GetFalcon()
+	commandCenter := common.GetCommandCenterInstance()
+
+	switch {
+	case inpututil.IsKeyJustReleased(ebiten.KeyS) && commandCenter.IsGameOver():
+		commandCenter.InitGame()
+	case inpututil.IsKeyJustReleased(ebiten.KeyLeft):
+		falcon.SetTurnState(common.IDLE)
+	case inpututil.IsKeyJustReleased(ebiten.KeyRight):
+		falcon.SetTurnState(common.IDLE)
+	case inpututil.IsKeyJustReleased(ebiten.KeyUp):
+		falcon.SetThrusting(false)
+		//SoundLoader.stopSound("whitenoise_loop.wav")
+	case inpututil.IsKeyJustReleased(ebiten.KeyP):
+		commandCenter.SetPaused(!commandCenter.IsPaused())
+	case inpututil.IsKeyJustReleased(ebiten.KeyQ):
+		os.Exit(0)
+	case inpututil.IsKeyJustReleased(ebiten.KeyA):
+		commandCenter.SetRadar(!commandCenter.IsRadar())
+	case inpututil.IsKeyJustReleased(ebiten.KeyM):
+		if commandCenter.IsThemeMusic() {
+			//SoundLoader.stopSound("dr_loop.wav")
+		} else {
+			//SoundLoader.playSound("dr_loop.wav");
+		}
+		commandCenter.SetThemeMusic(!commandCenter.IsThemeMusic())
 	}
 }
 
