@@ -212,3 +212,15 @@ func (f *Falcon) SetThrusting(thrusting bool) {
 func (f *Falcon) SetTurnState(turnState common.TurnState) {
 	f.turnState = turnState
 }
+
+func (f *Falcon) GetOrientation() float64 {
+	return f.orientation
+}
+
+func (f *Falcon) SetDeltaX(deltaX float64) {
+	f.deltaX = deltaX
+}
+
+func (f *Falcon) SetDeltaY(deltaY float64) {
+	f.deltaY = deltaY
+}
