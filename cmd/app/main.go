@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	defer common.CloseSound()
 	common.SetCommandCenterInstance(controller.NewCommandCenter())
 	ebiten.SetWindowSize(common.DIM.Width, common.DIM.Height)
 	ebiten.SetWindowTitle(common.WINDOW_TITLE)
