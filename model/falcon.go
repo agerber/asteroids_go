@@ -27,14 +27,6 @@ const (
 	FALCON_SHIELD_THR                   //shielded ship (cyan) thrusting
 )
 
-type TurnState int
-
-const (
-	IDLE TurnState = iota
-	LEFT
-	RIGHT
-)
-
 type Falcon struct {
 	*Sprite
 
@@ -43,14 +35,14 @@ type Falcon struct {
 	invisible        int
 	maxSpeedAttained bool
 	showLevel        int
-	turnState        TurnState
+	turnState        common.TurnState
 	thrusting        bool
 }
 
 func NewFalcon() *Falcon {
 	falcon := &Falcon{
 		Sprite:    NewSprite(),
-		turnState: IDLE,
+		turnState: common.IDLE,
 	}
 
 	falcon.team = common.FRIEND
@@ -105,19 +97,19 @@ func (f *Falcon) Move() {
 	}
 
 	switch f.turnState {
-	case LEFT:
+	case common.LEFT:
 		if f.orientation <= 0 {
 			f.orientation = 360 - TURN_STEP
 		} else {
 			f.orientation -= TURN_STEP
 		}
-	case RIGHT:
+	case common.RIGHT:
 		if f.orientation >= 360 {
 			f.orientation = TURN_STEP
 		} else {
 			f.orientation += TURN_STEP
 		}
-	case IDLE:
+	case common.IDLE:
 	default:
 	}
 }
@@ -211,4 +203,12 @@ func (f *Falcon) DecrementFalconNumAndSpawn() {
 	f.radius = MIN_RADIUS
 	f.maxSpeedAttained = false
 	f.nukeMeter = 0
+}
+
+func (f *Falcon) SetThrusting(thrusting bool) {
+	f.thrusting = thrusting
+}
+
+func (f *Falcon) SetTurnState(turnState common.TurnState) {
+	f.turnState = turnState
 }

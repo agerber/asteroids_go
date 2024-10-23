@@ -24,6 +24,12 @@ type ICommandCenter interface {
 	GetFalcon() IFalcon
 	GetNumFalcons() int
 	SetNumFalcons(numFalcons int)
+	IsPaused() bool
+	SetPaused(paused bool)
+	IsRadar() bool
+	SetRadar(radar bool)
+	IsThemeMusic() bool
+	SetThemeMusic(themeMusic bool)
 }
 
 var singletonCommandCenter ICommandCenter
