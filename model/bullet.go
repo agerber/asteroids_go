@@ -10,11 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	FIRE_POWER        = 35.0
-	KICK_BACK_DIVISOR = 36.0
-)
-
 var OrangeColor = color.RGBA{R: 255, G: 165, B: 0, A: 255}
 
 type Bullet struct {
@@ -33,6 +28,11 @@ func NewBullet(falcon common.IFalcon) *Bullet {
 
 	bullet.center = falcon.GetCenter()
 	bullet.orientation = falcon.GetOrientation()
+
+	const (
+		FIRE_POWER        = 35.0
+		KICK_BACK_DIVISOR = 36.0
+	)
 
 	vectorX := math.Cos(bullet.orientation*math.Pi/180) * FIRE_POWER
 	vectorY := math.Sin(bullet.orientation*math.Pi/180) * FIRE_POWER
