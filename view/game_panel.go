@@ -10,6 +10,7 @@ import (
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
 )
 
@@ -74,12 +75,27 @@ func NewGamePanel(dim common.Dimension) *GamePanel {
 
 func (g *GamePanel) Draw(screen *ebiten.Image) {
 	g.drawNumFrame(screen)
-	g.moveDrawMovables(screen,
-		common.GetCommandCenterInstance().GetMovDebris(),
-		common.GetCommandCenterInstance().GetMovFriends(),
-		common.GetCommandCenterInstance().GetMovFoes(),
-		common.GetCommandCenterInstance().GetMovFloaters())
-	g.drawNumberShipsRemaining(screen)
+	if common.GetCommandCenterInstance().IsGameOver() {
+		g.displayTextOnScreen(screen, []string{
+			"GAME OVER",
+			"use the arrow keys to turn and thrust",
+			"use the space bar to fire",
+			"'S' to Start",
+			"'P' to Pause",
+			"'Q' to Quit",
+			"'M' to toggle music",
+			"'A' to toggle radar",
+		})
+	} else if common.GetCommandCenterInstance().IsPaused() {
+		g.displayTextOnScreen(screen, []string{"Game Paused"})
+	} else {
+		g.moveDrawMovables(screen,
+			common.GetCommandCenterInstance().GetMovDebris(),
+			common.GetCommandCenterInstance().GetMovFriends(),
+			common.GetCommandCenterInstance().GetMovFoes(),
+			common.GetCommandCenterInstance().GetMovFloaters())
+		g.drawNumberShipsRemaining(screen)
+	}
 }
 
 func (g *GamePanel) moveDrawMovables(screen *ebiten.Image, teams ...*list.List) {
@@ -93,8 +109,7 @@ func (g *GamePanel) moveDrawMovables(screen *ebiten.Image, teams ...*list.List) 
 }
 
 func (g *GamePanel) drawNumberShipsRemaining(screen *ebiten.Image) {
-	//int numFalcons = CommandCenter.getInstance().getNumFalcons(); TODO: convert it
-	numFalcons := 36
+	numFalcons := common.GetCommandCenterInstance().GetNumFalcons()
 	for i := numFalcons; i > 1; i-- {
 		g.drawOneShip(screen, i)
 	}
@@ -142,4 +157,16 @@ var normalFont = basicfont.Face7x13
 func (g *GamePanel) drawNumFrame(screen *ebiten.Image) {
 	numFrameText := fmt.Sprintf("FRAME[GO]:%d", common.GetCommandCenterInstance().GetFrame())
 	text.Draw(screen, numFrameText, normalFont, normalFont.Width, common.DIM.Height-(normalFont.Height), color.White)
+}
+
+func (g *GamePanel) displayTextOnScreen(screen *ebiten.Image, lines []string) {
+	var spacer int
+	for _, str := range lines {
+		bounds, _ := font.BoundString(normalFont, str)
+		width := (bounds.Max.X - bounds.Min.X).Ceil()
+		x := (screen.Bounds().Dx() - width) / 2
+		spacer += 40
+		y := screen.Bounds().Dy()/4 + normalFont.Height + spacer
+		text.Draw(screen, str, normalFont, x, y, color.White)
+	}
 }
