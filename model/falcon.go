@@ -2,19 +2,23 @@ package model
 
 import (
 	"container/list"
+	"math"
+
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"math"
 )
 
 const (
-	TURN_STEP          = 5
-	INITIAL_SPAWN_TIME = 48
-	MAX_SHIELD         = 200
-	MAX_NUKE           = 600
-	MIN_RADIUS         = 28
+	FALCON_TURN_STEP  = 11 / common.GOLANG_FRAMES_SCALE_FACTOR
+	FALCON_MIN_RADIUS = 28
+)
+
+var (
+	FALCON_INITIAL_SPAWN_TIME = int(math.Round(48 * common.GOLANG_FRAMES_SCALE_FACTOR))
+	FALCON_MAX_SHIELD         = int(math.Round(200 * common.GOLANG_FRAMES_SCALE_FACTOR))
+	FALCON_MAX_NUKE           = int(math.Round(600 * common.GOLANG_FRAMES_SCALE_FACTOR))
 )
 
 type ImageState int
@@ -46,7 +50,7 @@ func NewFalcon() *Falcon {
 	}
 
 	falcon.team = common.FRIEND
-	falcon.radius = MIN_RADIUS
+	falcon.radius = FALCON_MIN_RADIUS
 
 	falcon.rasterMap = make(map[interface{}]*ebiten.Image)
 	falcon.rasterMap[FALCON_INVISIBLE] = nil
@@ -61,7 +65,6 @@ func NewFalcon() *Falcon {
 func (f *Falcon) Move() {
 	if !common.GetCommandCenterInstance().IsFalconPositionFixed() {
 		f.move(f)
-		return
 	}
 
 	if f.invisible > 0 {
@@ -77,8 +80,8 @@ func (f *Falcon) Move() {
 		f.showLevel--
 	}
 
-	thrust := 0.85
-	maxVelocity := 39
+	thrust := 0.85 / common.GOLANG_FRAMES_SCALE_FACTOR
+	maxVelocity := int(math.Round(39 / common.GOLANG_FRAMES_SCALE_FACTOR))
 
 	if f.thrusting {
 		vectorX := math.Cos(f.orientation*math.Pi/180) * thrust
@@ -89,7 +92,7 @@ func (f *Falcon) Move() {
 		if absVelocity < maxVelocity {
 			f.deltaX += vectorX
 			f.deltaY += vectorY
-			f.radius = MIN_RADIUS + absVelocity/3
+			f.radius = FALCON_MIN_RADIUS + absVelocity/3
 			f.maxSpeedAttained = false
 		} else {
 			f.maxSpeedAttained = true
@@ -99,15 +102,15 @@ func (f *Falcon) Move() {
 	switch f.turnState {
 	case common.LEFT:
 		if f.orientation <= 0 {
-			f.orientation = 360 - TURN_STEP
+			f.orientation = 360 - FALCON_TURN_STEP
 		} else {
-			f.orientation -= TURN_STEP
+			f.orientation -= FALCON_TURN_STEP
 		}
 	case common.RIGHT:
 		if f.orientation >= 360 {
-			f.orientation = TURN_STEP
+			f.orientation = FALCON_TURN_STEP
 		} else {
-			f.orientation += TURN_STEP
+			f.orientation += FALCON_TURN_STEP
 		}
 	case common.IDLE:
 	default:
@@ -115,11 +118,6 @@ func (f *Falcon) Move() {
 }
 
 func (f *Falcon) Draw(screen *ebiten.Image) {
-	// TODO: remove this
-	f.nukeMeter = 1
-	f.invisible = 0
-	f.shield = 1
-
 	if f.nukeMeter > 0 {
 		f.drawNukeHalo(screen)
 	}
@@ -195,12 +193,12 @@ func (f *Falcon) DecrementFalconNumAndSpawn() {
 		return
 	}
 	common.PlaySound("shipspawn.wav")
-	f.shield = INITIAL_SPAWN_TIME
-	f.invisible = INITIAL_SPAWN_TIME / 5
-	f.orientation = common.GenerateRandomFloat64(360/TURN_STEP) * TURN_STEP
+	f.shield = FALCON_INITIAL_SPAWN_TIME
+	f.invisible = FALCON_INITIAL_SPAWN_TIME / 5
+	f.orientation = common.GenerateRandomFloat64(360/FALCON_TURN_STEP) * FALCON_TURN_STEP
 	f.deltaX = 0
 	f.deltaY = 0
-	f.radius = MIN_RADIUS
+	f.radius = FALCON_MIN_RADIUS
 	f.maxSpeedAttained = false
 	f.nukeMeter = 0
 }
@@ -231,4 +229,16 @@ func (f *Falcon) GetNukeMeter() int {
 
 func (f *Falcon) SetNukeMeter(nukeMeter int) {
 	f.nukeMeter = nukeMeter
+}
+
+func (f *Falcon) SetCenter(center prime.Point) {
+	f.center = center
+}
+
+func (f *Falcon) SetShield(shield int) {
+	f.shield = shield
+}
+
+func (f *Falcon) SetShowLevel(showLevel int) {
+	f.showLevel = showLevel
 }
