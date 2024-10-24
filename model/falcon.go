@@ -242,3 +242,11 @@ func (f *Falcon) SetShield(shield int) {
 func (f *Falcon) SetShowLevel(showLevel int) {
 	f.showLevel = showLevel
 }
+
+func (f *Falcon) GetShowLevel() int {
+	return f.showLevel
+}
+
+func (f *Falcon) IsMaxSpeedAttained() bool {
+	return f.maxSpeedAttained
+}

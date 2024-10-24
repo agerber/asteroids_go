@@ -95,6 +95,7 @@ func (g *GamePanel) Draw(screen *ebiten.Image) {
 			common.GetCommandCenterInstance().GetMovFoes(),
 			common.GetCommandCenterInstance().GetMovFloaters())
 		g.drawNumberShipsRemaining(screen)
+		g.drawFalconStatus(screen)
 	}
 }
 
@@ -168,5 +169,29 @@ func (g *GamePanel) displayTextOnScreen(screen *ebiten.Image, lines []string) {
 		spacer += 40
 		y := screen.Bounds().Dy()/4 + normalFont.Height + spacer
 		text.Draw(screen, str, normalFont, x, y, color.White)
+	}
+}
+
+func (g *GamePanel) drawFalconStatus(screen *ebiten.Image) {
+	const OFFSET_LEFT = 220
+
+	levelText := fmt.Sprintf("Level : [%d] %s", common.GetCommandCenterInstance().GetLevel(), common.GetCommandCenterInstance().GetUniverse().String())
+	text.Draw(screen, levelText, normalFont, common.DIM.Width-OFFSET_LEFT, normalFont.Height, color.White)
+	scoreText := fmt.Sprintf("Score : %d", common.GetCommandCenterInstance().GetScore())
+	text.Draw(screen, scoreText, normalFont, common.DIM.Width-OFFSET_LEFT, normalFont.Height*2, color.White)
+
+	statusArray := []string{}
+	if common.GetCommandCenterInstance().GetFalcon().GetShowLevel() > 0 {
+		statusArray = append(statusArray, levelText)
+	}
+	if common.GetCommandCenterInstance().GetFalcon().IsMaxSpeedAttained() {
+		statusArray = append(statusArray, "WARNING - SLOW DOWN")
+	}
+	if common.GetCommandCenterInstance().GetFalcon().GetNukeMeter() > 0 {
+		statusArray = append(statusArray, "PRESS F for NUKE")
+	}
+
+	if len(statusArray) > 0 {
+		g.displayTextOnScreen(screen, statusArray)
 	}
 }
