@@ -8,6 +8,7 @@ import (
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"golang.org/x/image/colornames"
 )
 
 var NUKE_EXPIRY = int(math.Round(60 * common.GOLANG_FRAMES_SCALE_FACTOR))
@@ -25,7 +26,7 @@ func NewNuke(falcon common.IFalcon) *Nuke {
 	}
 
 	nuke.team = common.FRIEND
-	nuke.color = YellowColor
+	nuke.color = colornames.Yellow
 	nuke.expiry = NUKE_EXPIRY
 	nuke.radius = 0
 

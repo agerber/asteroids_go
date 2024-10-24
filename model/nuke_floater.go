@@ -2,19 +2,17 @@ package model
 
 import (
 	"container/list"
-	"image/color"
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/image/colornames"
 )
 
 const SPAWN_NUKE_FLOATER = common.GOLANG_FRAMES_PER_SECOND * 12
 
 var NUKE_FLOATER_EXPIRY = int(math.Round(120 * common.GOLANG_FRAMES_SCALE_FACTOR))
-
-var YellowColor = color.RGBA{R: 255, G: 255, B: 0, A: 255}
 
 type NukeFloater struct {
 	*Floater
@@ -25,7 +23,7 @@ func NewNukeFloater() common.Movable {
 		Floater: NewFloater(),
 	}
 
-	nukeFloater.color = YellowColor
+	nukeFloater.color = colornames.Yellow
 	nukeFloater.expiry = NUKE_FLOATER_EXPIRY
 
 	return nukeFloater

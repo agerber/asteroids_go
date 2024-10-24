@@ -8,6 +8,7 @@ import (
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"golang.org/x/image/colornames"
 )
 
 const (
@@ -87,7 +88,7 @@ func (f *Falcon) Move() {
 		vectorX := math.Cos(f.orientation*math.Pi/180) * thrust
 		vectorY := math.Sin(f.orientation*math.Pi/180) * thrust
 
-		absVelocity := int(math.Sqrt(math.Pow(f.deltaX+vectorX, 2) + math.Pow(f.deltaY+vectorY, 2)))
+		absVelocity := int(math.Round(math.Sqrt(math.Pow(f.deltaX+vectorX, 2) + math.Pow(f.deltaY+vectorY, 2))))
 
 		if absVelocity < maxVelocity {
 			f.deltaX += vectorX
@@ -176,7 +177,7 @@ func (f *Falcon) GetDeltaY() float64 {
 }
 
 func (f *Falcon) drawShieldHalo(screen *ebiten.Image) {
-	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius), 1, CyanColor, false)
+	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius), 1, colornames.Cyan, false)
 }
 
 func (f *Falcon) drawNukeHalo(screen *ebiten.Image) {
@@ -184,7 +185,7 @@ func (f *Falcon) drawNukeHalo(screen *ebiten.Image) {
 		return
 	}
 
-	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius)-10, 1, YellowColor, false)
+	vector.StrokeCircle(screen, float32(f.center.X), float32(f.center.Y), float32(f.radius)-10, 1, colornames.Yellow, false)
 }
 
 func (f *Falcon) DecrementFalconNumAndSpawn() {
@@ -233,6 +234,10 @@ func (f *Falcon) SetNukeMeter(nukeMeter int) {
 
 func (f *Falcon) SetCenter(center prime.Point) {
 	f.center = center
+}
+
+func (f *Falcon) GetShield() int {
+	return f.shield
 }
 
 func (f *Falcon) SetShield(shield int) {

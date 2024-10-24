@@ -2,12 +2,12 @@ package model
 
 import (
 	"container/list"
-	"image/color"
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/image/colornames"
 )
 
 var (
@@ -15,8 +15,6 @@ var (
 	BULLET_FIRE_POWER        = 35.0 / common.GOLANG_FRAMES_SCALE_FACTOR
 	BULLET_KICK_BACK_DIVISOR = 36.0 * common.GOLANG_FRAMES_SCALE_FACTOR
 )
-
-var OrangeColor = color.RGBA{R: 255, G: 165, B: 0, A: 255}
 
 type Bullet struct {
 	*Sprite
@@ -28,7 +26,7 @@ func NewBullet(falcon common.IFalcon) *Bullet {
 	}
 
 	bullet.team = common.FRIEND
-	bullet.color = OrangeColor
+	bullet.color = colornames.Orange
 	bullet.expiry = BULLET_EXPIRY
 	bullet.radius = 6
 

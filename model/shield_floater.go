@@ -2,19 +2,17 @@ package model
 
 import (
 	"container/list"
-	"image/color"
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/image/colornames"
 )
 
 const SPAWN_SHIELD_FLOATER = common.GOLANG_FRAMES_PER_SECOND * 25
 
 var SHIELD_FLOATER_EXPIRY = int(math.Round(260 * common.GOLANG_FRAMES_SCALE_FACTOR))
-
-var CyanColor = color.RGBA{R: 0, G: 255, B: 255, A: 255}
 
 type ShieldFloater struct {
 	*Floater
@@ -25,7 +23,7 @@ func NewShieldFloater() common.Movable {
 		Floater: NewFloater(),
 	}
 
-	shieldFloater.color = CyanColor
+	shieldFloater.color = colornames.Cyan
 	shieldFloater.expiry = SHIELD_FLOATER_EXPIRY
 
 	return shieldFloater

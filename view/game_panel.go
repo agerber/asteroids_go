@@ -7,11 +7,14 @@ import (
 	"math"
 
 	"github.com/agerber/asteroids_go/common"
+	"github.com/agerber/asteroids_go/model"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+	"golang.org/x/image/colornames"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
+	"golang.org/x/image/font/inconsolata"
 )
 
 const (
@@ -19,7 +22,7 @@ const (
 )
 
 var (
-	OrangeColor = color.RGBA{R: 255, G: 165, B: 0, A: 255}
+	normalFont = inconsolata.Bold8x16
 )
 
 type GamePanel struct {
@@ -95,6 +98,7 @@ func (g *GamePanel) Draw(screen *ebiten.Image) {
 			common.GetCommandCenterInstance().GetMovFoes(),
 			common.GetCommandCenterInstance().GetMovFloaters())
 		g.drawNumberShipsRemaining(screen)
+		g.drawMeters(screen)
 		g.drawFalconStatus(screen)
 	}
 }
@@ -149,15 +153,12 @@ func (g *GamePanel) drawOneShip(screen *ebiten.Image, offset int) {
 		points[i] = point
 	}
 
-	common.DrawPolygon(screen, points, OrangeColor)
+	common.DrawPolygon(screen, points, colornames.Orange)
 }
-
-// TODO: Update to new font
-var normalFont = basicfont.Face7x13
 
 func (g *GamePanel) drawNumFrame(screen *ebiten.Image) {
 	numFrameText := fmt.Sprintf("FRAME[GO]:%d", common.GetCommandCenterInstance().GetFrame())
-	text.Draw(screen, numFrameText, normalFont, normalFont.Width, common.DIM.Height-(normalFont.Height), color.White)
+	text.Draw(screen, numFrameText, normalFont, normalFont.Width, g.dim.Height-(normalFont.Height), color.White)
 }
 
 func (g *GamePanel) displayTextOnScreen(screen *ebiten.Image, lines []string) {
@@ -176,9 +177,9 @@ func (g *GamePanel) drawFalconStatus(screen *ebiten.Image) {
 	const OFFSET_LEFT = 220
 
 	levelText := fmt.Sprintf("Level : [%d] %s", common.GetCommandCenterInstance().GetLevel(), common.GetCommandCenterInstance().GetUniverse().String())
-	text.Draw(screen, levelText, normalFont, common.DIM.Width-OFFSET_LEFT, normalFont.Height, color.White)
+	text.Draw(screen, levelText, normalFont, g.dim.Width-OFFSET_LEFT, normalFont.Height, color.White)
 	scoreText := fmt.Sprintf("Score : %d", common.GetCommandCenterInstance().GetScore())
-	text.Draw(screen, scoreText, normalFont, common.DIM.Width-OFFSET_LEFT, normalFont.Height*2, color.White)
+	text.Draw(screen, scoreText, normalFont, g.dim.Width-OFFSET_LEFT, normalFont.Height*2, color.White)
 
 	statusArray := []string{}
 	if common.GetCommandCenterInstance().GetFalcon().GetShowLevel() > 0 {
@@ -194,4 +195,23 @@ func (g *GamePanel) drawFalconStatus(screen *ebiten.Image) {
 	if len(statusArray) > 0 {
 		g.displayTextOnScreen(screen, statusArray)
 	}
+}
+
+func (g *GamePanel) drawMeters(screen *ebiten.Image) {
+	shieldValue := int(math.Round(float64(common.GetCommandCenterInstance().GetFalcon().GetShield()) / float64(model.FALCON_MAX_SHIELD) * 100))
+	nukeValue := int(math.Round(float64(common.GetCommandCenterInstance().GetFalcon().GetNukeMeter()) / float64(model.FALCON_MAX_NUKE) * 100))
+
+	g.drawOneMeter(screen, colornames.Cyan, 1, shieldValue)
+	g.drawOneMeter(screen, colornames.Yellow, 2, nukeValue)
+}
+
+func (g *GamePanel) drawOneMeter(screen *ebiten.Image, color color.Color, offSet int, percent int) {
+	xVal := screen.Bounds().Dx() - (100 + 120*offSet)
+	yVal := screen.Bounds().Dy() - 45
+
+	// Draw meter
+	vector.DrawFilledRect(screen, float32(xVal), float32(yVal), float32(percent), 10, color, false)
+
+	// Draw gray box
+	vector.StrokeRect(screen, float32(xVal), float32(yVal), 100, 10, 1, colornames.Darkgray, false)
 }

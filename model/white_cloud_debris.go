@@ -2,13 +2,14 @@ package model
 
 import (
 	"container/list"
+	"math"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const SLOW_MO = 10
+var SLOW_MO = int(math.Round(3 * common.GOLANG_FRAMES_SCALE_FACTOR))
 
 type WhiteCloudDebris struct {
 	*Sprite
@@ -37,7 +38,7 @@ func NewWhiteCloudDebris(explodingSprite *Sprite) *WhiteCloudDebris {
 	//expire it out after it has done its animation. Multiply by SLOW_MO to slow down the animation
 	whiteCloudDebris.expiry = len(whiteCloudDebris.rasterMap) * SLOW_MO
 
-	whiteCloudDebris.radius = int(float64(explodingSprite.radius) * 1.3)
+	whiteCloudDebris.radius = int(math.Round(float64(explodingSprite.radius) * 1.3))
 
 	return whiteCloudDebris
 }
