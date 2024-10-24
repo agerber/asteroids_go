@@ -34,6 +34,7 @@ type IFalcon interface {
 	GetNukeMeter() int
 	SetNukeMeter(nukeMeter int)
 	SetCenter(center prime.Point)
+	GetShield() int
 	SetShield(shield int)
 	SetShowLevel(showLevel int)
 	GetShowLevel() int
