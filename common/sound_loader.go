@@ -1,6 +1,7 @@
 package common
 
 import (
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,16 +13,19 @@ import (
 
 const sampleRate = 44100
 
-var soundMap map[string]*audio.Player
+var (
+	audioContext   = audio.NewContext(sampleRate)
+	loopPlayerMap  map[string]*audio.Player
+	soundSourceMap map[string][]byte
+)
 
 func init() {
-	soundMap = make(map[string]*audio.Player)
+	loopPlayerMap = make(map[string]*audio.Player)
+	soundSourceMap = make(map[string][]byte)
 	loadWAVSounds("assets/sounds")
 }
 
 func loadWAVSounds(rootDir string) {
-	audioContext := audio.NewContext(sampleRate)
-
 	files, err := os.ReadDir(rootDir)
 	if err != nil {
 		panic(err)
@@ -51,7 +55,7 @@ func loadWAVSounds(rootDir string) {
 				panic(err)
 			}
 
-			soundMap[file.Name()] = player
+			loopPlayerMap[file.Name()] = player
 		} else if strings.HasSuffix(lowerCaseFileName, ".wav") {
 			data, err := os.Open(path)
 			if err != nil {
@@ -63,43 +67,65 @@ func loadWAVSounds(rootDir string) {
 				panic(err)
 			}
 
-			player, err := audioContext.NewPlayer(stream)
+			soundSource, err := io.ReadAll(stream)
 			if err != nil {
 				panic(err)
 			}
 
-			soundMap[file.Name()] = player
+			soundSourceMap[file.Name()] = soundSource
 		}
 	}
 }
 
+func isLoopSound(fileName string) bool {
+	return strings.HasSuffix(strings.ToLower(fileName), "_loop.wav")
+}
+
 func PlaySound(fileName string) {
-	player, ok := soundMap[fileName]
+	if isLoopSound(fileName) {
+		player, ok := loopPlayerMap[fileName]
+		if !ok {
+			log.Printf("Loop player %s not found\n", fileName)
+			return
+		}
+
+		if player.IsPlaying() {
+			player.Pause()
+		}
+
+		_ = player.Rewind()
+		player.Play()
+		return
+	}
+
+	soundSource, ok := soundSourceMap[fileName]
 	if !ok {
-		log.Printf("Sound %s not found\n", fileName)
+		log.Printf("Sound source %s not found\n", fileName)
 		return
 	}
 
-	if player.IsPlaying() {
-		return
-	}
-
-	_ = player.Rewind()
+	player := audioContext.NewPlayerFromBytes(soundSource)
 	player.Play()
 }
 
 func StopSound(fileName string) {
-	player, ok := soundMap[fileName]
-	if !ok {
-		log.Printf("Sound %s not found\n", fileName)
+	if !isLoopSound(fileName) {
 		return
 	}
 
-	player.Pause()
+	player, ok := loopPlayerMap[fileName]
+	if !ok {
+		log.Printf("Loop player %s not found\n", fileName)
+		return
+	}
+
+	if player.IsPlaying() {
+		player.Pause()
+	}
 }
 
 func CloseSound() {
-	for _, player := range soundMap {
+	for _, player := range loopPlayerMap {
 		_ = player.Close()
 	}
 }
