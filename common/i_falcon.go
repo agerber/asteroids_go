@@ -33,4 +33,7 @@ type IFalcon interface {
 	SetDeltaY(deltaY float64)
 	GetNukeMeter() int
 	SetNukeMeter(nukeMeter int)
+	SetCenter(center prime.Point)
+	SetShield(shield int)
+	SetShowLevel(showLevel int)
 }

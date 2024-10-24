@@ -55,6 +55,6 @@ func (s *ShieldFloater) RemoveFromGame(list *list.List) {
 
 	if s.expiry > 0 {
 		common.PlaySound("shieldup.wav")
-		//CommandCenter.getInstance().getFalcon().setShield(Falcon.MAX_SHIELD)
+		common.GetCommandCenterInstance().GetFalcon().SetShield(FALCON_MAX_SHIELD)
 	}
 }

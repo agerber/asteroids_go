@@ -55,6 +55,6 @@ func (n *NukeFloater) RemoveFromGame(list *list.List) {
 
 	if n.expiry > 0 {
 		common.PlaySound("nuke-up.wav")
-		//CommandCenter.getInstance().getFalcon().setNukeMeter(Falcon.MAX_NUKE);
+		common.GetCommandCenterInstance().GetFalcon().SetNukeMeter(FALCON_MAX_NUKE)
 	}
 }

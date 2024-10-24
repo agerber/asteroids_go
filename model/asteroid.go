@@ -26,13 +26,10 @@ func NewAsteroid(size int) *Asteroid {
 	}
 	asteroid.team = common.FOE
 	asteroid.color = color.White
-	asteroid.spin = asteroid.somePosNegValue(4)
-	asteroid.deltaX = asteroid.somePosNegValue(4)
-	asteroid.deltaY = asteroid.somePosNegValue(4)
+	asteroid.spin = asteroid.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
+	asteroid.deltaX = asteroid.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
+	asteroid.deltaY = asteroid.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
 	asteroid.cartesians = asteroid.generateVertices()
-
-	// TODO: remove this
-	asteroid.expiry = 400
 
 	return asteroid
 }
@@ -42,8 +39,8 @@ func NewAsteroidFromExisting(astExploded *Asteroid) *Asteroid {
 
 	newAsteroid := NewAsteroid(newSmallerSize)
 	newAsteroid.center = astExploded.center
-	newAsteroid.deltaX = astExploded.deltaX/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2))
-	newAsteroid.deltaY = astExploded.deltaY/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2))
+	newAsteroid.deltaX = astExploded.deltaX/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2)/common.GOLANG_FRAMES_SCALE_FACTOR)
+	newAsteroid.deltaY = astExploded.deltaY/1.5 + newAsteroid.somePosNegValue(float64(5+newSmallerSize*2)/common.GOLANG_FRAMES_SCALE_FACTOR)
 
 	return newAsteroid
 }
@@ -73,7 +70,10 @@ func (a *Asteroid) AddToGame(list *list.List) {
 }
 
 func (a *Asteroid) RemoveFromGame(list *list.List) {
-	a.removeFromGame(list, a)
+	removed := a.removeFromGame(list, a)
+	if !removed {
+		return
+	}
 
 	a.spawnSmallerAsteroidsOrDebris()
 	common.GetCommandCenterInstance().SetScore(common.GetCommandCenterInstance().GetScore() + 10*(int64(a.getSize())+1))

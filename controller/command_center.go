@@ -8,19 +8,8 @@ import (
 	"github.com/agerber/asteroids_go/model"
 )
 
-type Universe int
-
-const (
-	FREE_FLY Universe = iota
-	CENTER
-	BIG
-	HORIZONTAL
-	VERTICAL
-	DARK
-)
-
 type CommandCenter struct {
-	universe    Universe
+	universe    common.Universe
 	numFalcons  int
 	level       int
 	score       int64
@@ -29,7 +18,7 @@ type CommandCenter struct {
 	radar       bool
 	frame       int64
 	falcon      common.IFalcon
-	miniDimHash map[Universe]common.Dimension
+	miniDimHash map[common.Universe]common.Dimension
 	//private final MiniMap miniMap = new MiniMap();
 	movDebris    *list.List
 	movFriends   *list.List
@@ -41,7 +30,7 @@ type CommandCenter struct {
 func NewCommandCenter() *CommandCenter {
 	return &CommandCenter{
 		falcon:      model.NewFalcon(),
-		miniDimHash: make(map[Universe]common.Dimension),
+		miniDimHash: make(map[common.Universe]common.Dimension),
 		//new MiniMap();
 		movDebris:    list.New(),
 		movFriends:   list.New(),
@@ -86,7 +75,7 @@ func (c *CommandCenter) GetUniDim() common.Dimension {
 }
 
 func (c *CommandCenter) IsFalconPositionFixed() bool {
-	return c.universe != FREE_FLY
+	return c.universe != common.FREE_FLY
 }
 
 func (c *CommandCenter) GetMovDebris() *list.List {
@@ -161,13 +150,21 @@ func (c *CommandCenter) SetThemeMusic(themeMusic bool) {
 	c.themeMusic = themeMusic
 }
 
+func (c *CommandCenter) SetUniverse(universe common.Universe) {
+	c.universe = universe
+}
+
+func (c *CommandCenter) GetUniverse() common.Universe {
+	return c.universe
+}
+
 func (c *CommandCenter) setDimHash() {
-	c.miniDimHash[FREE_FLY] = common.Dimension{Width: 1, Height: 1}
-	c.miniDimHash[CENTER] = common.Dimension{Width: 1, Height: 1}
-	c.miniDimHash[BIG] = common.Dimension{Width: 2, Height: 2}
-	c.miniDimHash[HORIZONTAL] = common.Dimension{Width: 3, Height: 1}
-	c.miniDimHash[VERTICAL] = common.Dimension{Width: 1, Height: 3}
-	c.miniDimHash[DARK] = common.Dimension{Width: 4, Height: 4}
+	c.miniDimHash[common.FREE_FLY] = common.Dimension{Width: 1, Height: 1}
+	c.miniDimHash[common.CENTER] = common.Dimension{Width: 1, Height: 1}
+	c.miniDimHash[common.BIG] = common.Dimension{Width: 2, Height: 2}
+	c.miniDimHash[common.HORIZONTAL] = common.Dimension{Width: 3, Height: 1}
+	c.miniDimHash[common.VERTICAL] = common.Dimension{Width: 1, Height: 3}
+	c.miniDimHash[common.DARK] = common.Dimension{Width: 4, Height: 4}
 }
 
 func (c *CommandCenter) generateStarField() {
