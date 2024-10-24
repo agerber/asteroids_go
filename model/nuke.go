@@ -10,7 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-const EXPIRE = 60
+var NUKE_EXPIRY = int(math.Round(60 * common.GOLANG_FRAMES_SCALE_FACTOR))
 
 type Nuke struct {
 	*Sprite
@@ -26,12 +26,12 @@ func NewNuke(falcon common.IFalcon) *Nuke {
 
 	nuke.team = common.FRIEND
 	nuke.color = YellowColor
-	nuke.expiry = EXPIRE
+	nuke.expiry = NUKE_EXPIRY
 	nuke.radius = 0
 
 	nuke.center = falcon.GetCenter()
 
-	const FIRE_POWER = 11.0
+	const FIRE_POWER = 11.0 / common.GOLANG_FRAMES_SCALE_FACTOR
 
 	vectorX := math.Cos(falcon.GetOrientation()*math.Pi/180) * FIRE_POWER
 	vectorY := math.Sin(falcon.GetOrientation()*math.Pi/180) * FIRE_POWER
@@ -45,7 +45,7 @@ func NewNuke(falcon common.IFalcon) *Nuke {
 func (n *Nuke) Move() {
 	n.move(n)
 
-	if n.expiry%(EXPIRE/6) == 0 {
+	if n.expiry%(NUKE_EXPIRY/6) == 0 {
 		n.nukeState++
 	}
 
