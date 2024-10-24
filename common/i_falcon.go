@@ -36,4 +36,6 @@ type IFalcon interface {
 	SetCenter(center prime.Point)
 	SetShield(shield int)
 	SetShowLevel(showLevel int)
+	GetShowLevel() int
+	IsMaxSpeedAttained() bool
 }
