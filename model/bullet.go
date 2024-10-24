@@ -10,6 +10,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+var (
+	BULLET_EXPIRE            = int(math.Round(20 * common.GOLANG_FRAMES_SCALE_FACTOR))
+	BULLET_FIRE_POWER        = 35.0 / common.GOLANG_FRAMES_SCALE_FACTOR
+	BULLET_KICK_BACK_DIVISOR = 36.0 * common.GOLANG_FRAMES_SCALE_FACTOR
+)
+
 var OrangeColor = color.RGBA{R: 255, G: 165, B: 0, A: 255}
 
 type Bullet struct {
@@ -23,25 +29,20 @@ func NewBullet(falcon common.IFalcon) *Bullet {
 
 	bullet.team = common.FRIEND
 	bullet.color = OrangeColor
-	bullet.expiry = 20
+	bullet.expiry = BULLET_EXPIRE
 	bullet.radius = 6
 
 	bullet.center = falcon.GetCenter()
 	bullet.orientation = falcon.GetOrientation()
 
-	const (
-		FIRE_POWER        = 35.0
-		KICK_BACK_DIVISOR = 36.0
-	)
-
-	vectorX := math.Cos(bullet.orientation*math.Pi/180) * FIRE_POWER
-	vectorY := math.Sin(bullet.orientation*math.Pi/180) * FIRE_POWER
+	vectorX := math.Cos(bullet.orientation*math.Pi/180) * BULLET_FIRE_POWER
+	vectorY := math.Sin(bullet.orientation*math.Pi/180) * BULLET_FIRE_POWER
 
 	bullet.deltaX = falcon.GetDeltaX() + vectorX
 	bullet.deltaY = falcon.GetDeltaY() + vectorY
 
-	falcon.SetDeltaX(falcon.GetDeltaX() - vectorX/KICK_BACK_DIVISOR)
-	falcon.SetDeltaY(falcon.GetDeltaY() - vectorY/KICK_BACK_DIVISOR)
+	falcon.SetDeltaX(falcon.GetDeltaX() - vectorX/BULLET_KICK_BACK_DIVISOR)
+	falcon.SetDeltaY(falcon.GetDeltaY() - vectorY/BULLET_KICK_BACK_DIVISOR)
 
 	listPoints := []prime.Point{
 		{X: 0, Y: 3},
@@ -77,10 +78,10 @@ func (b *Bullet) GetTeam() common.Team {
 
 func (b *Bullet) AddToGame(list *list.List) {
 	b.addToGame(list, b)
+
+	common.PlaySound("thump.wav")
 }
 
 func (b *Bullet) RemoveFromGame(list *list.List) {
 	b.removeFromGame(list, b)
-
-	common.PlaySound("thump.wav")
 }

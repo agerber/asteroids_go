@@ -55,7 +55,7 @@ func (s *Sprite) move(movable common.Movable) {
 		}
 
 		s.center.X = math.Round(newXPos + s.deltaX)
-		s.center.Y = math.Round(newYPos + s.deltaX)
+		s.center.Y = math.Round(newYPos + s.deltaY)
 	}
 
 	if s.expiry > 0 {
@@ -70,7 +70,6 @@ func (s *Sprite) move(movable common.Movable) {
 func (s *Sprite) expire(movable common.Movable) {
 	if s.expiry == 1 {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(movable, common.REMOVE)
-		return
 	}
 	s.expiry--
 }
@@ -131,11 +130,12 @@ func (s *Sprite) addToGame(list *list.List, movable common.Movable) {
 	list.PushBack(movable)
 }
 
-func (s *Sprite) removeFromGame(list *list.List, movable common.Movable) {
+func (s *Sprite) removeFromGame(list *list.List, movable common.Movable) bool {
 	for e := list.Front(); e != nil; e = e.Next() {
 		if e.Value == movable {
 			list.Remove(e)
-			break
+			return true
 		}
 	}
+	return false
 }

@@ -21,6 +21,11 @@ func GenerateRandomFloat64(bound float64) float64 {
 	return random.Float64() * bound
 }
 
+func DistanceBetween2Points(point1 prime.Point, point2 prime.Point) float64 {
+	distance := math.Sqrt(math.Pow(point1.X-point2.X, 2) + math.Pow(point1.Y-point2.Y, 2))
+	return math.Abs(distance)
+}
+
 func CartesiansToPolars(pointCartesians []prime.Point) []prime.PolarPoint {
 	hypotenuseOfPoint := func(point prime.Point) float64 {
 		return math.Sqrt(math.Pow(point.X, 2) + math.Pow(point.Y, 2))

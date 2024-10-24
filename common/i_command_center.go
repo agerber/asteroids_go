@@ -5,6 +5,33 @@ import (
 	"sync"
 )
 
+type Universe int
+
+const (
+	FREE_FLY Universe = iota
+	CENTER
+	BIG
+	HORIZONTAL
+	VERTICAL
+	DARK
+)
+
+var universeStrings = map[Universe]string{
+	FREE_FLY:   "FREE_FLY",
+	CENTER:     "CENTER",
+	BIG:        "BIG",
+	HORIZONTAL: "HORIZONTAL",
+	VERTICAL:   "VERTICAL",
+	DARK:       "DARK",
+}
+
+func (u Universe) String() string {
+	if str, ok := universeStrings[u]; ok {
+		return str
+	}
+	return "UNKNOWN"
+}
+
 type ICommandCenter interface {
 	InitGame()
 	GetFrame() int64
@@ -30,6 +57,8 @@ type ICommandCenter interface {
 	SetRadar(radar bool)
 	IsThemeMusic() bool
 	SetThemeMusic(themeMusic bool)
+	SetUniverse(universe Universe)
+	GetUniverse() Universe
 }
 
 var singletonCommandCenter ICommandCenter

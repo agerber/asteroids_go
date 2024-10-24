@@ -6,6 +6,7 @@ import (
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model"
+	"github.com/agerber/asteroids_go/model/prime"
 	"github.com/agerber/asteroids_go/view"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -17,10 +18,6 @@ type Game struct {
 
 func NewGame() *Game {
 	gamePanel := view.NewGamePanel(common.DIM)
-
-	// TODO: remove it
-	common.GetCommandCenterInstance().SetLevel(1)
-
 	return &Game{
 		gamePanel: gamePanel,
 	}
@@ -29,6 +26,7 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	g.checkPressedKey()
 	g.checkReleasedKey()
+	g.checkCollisions()
 	g.checkNewLevel()
 	g.checkFloaters()
 	g.processGameOpsQueue()
@@ -93,6 +91,41 @@ func (g *Game) checkFloaters() {
 	g.spawnNukeFloater()
 }
 
+func (g *Game) checkCollisions() {
+	var pntFriendCenter, pntFoeCenter prime.Point
+	var radFriend, radFoe int
+	for e := common.GetCommandCenterInstance().GetMovFriends().Front(); e != nil; e = e.Next() {
+		movFriend := e.Value.(common.Movable)
+		for f := common.GetCommandCenterInstance().GetMovFoes().Front(); f != nil; f = f.Next() {
+			movFoe := f.Value.(common.Movable)
+
+			pntFriendCenter = movFriend.GetCenter()
+			pntFoeCenter = movFoe.GetCenter()
+			radFriend = movFriend.GetRadius()
+			radFoe = movFoe.GetRadius()
+
+			if common.DistanceBetween2Points(pntFriendCenter, pntFoeCenter) < float64(radFriend+radFoe) {
+				common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(movFriend, common.REMOVE)
+				common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(movFoe, common.REMOVE)
+			}
+		}
+	}
+
+	pntFalCenter := common.GetCommandCenterInstance().GetFalcon().GetCenter()
+	radFalcon := common.GetCommandCenterInstance().GetFalcon().GetRadius()
+	var pntFloaterCenter prime.Point
+	var radFloater int
+	for e := common.GetCommandCenterInstance().GetMovFloaters().Front(); e != nil; e = e.Next() {
+		movFloater := e.Value.(common.Movable)
+		pntFloaterCenter = movFloater.GetCenter()
+		radFloater = movFloater.GetRadius()
+
+		if common.DistanceBetween2Points(pntFalCenter, pntFloaterCenter) < float64(radFalcon+radFloater) {
+			common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(movFloater, common.REMOVE)
+		}
+	}
+}
+
 func (g *Game) spawnBigAsteroids(num int) {
 	for i := 0; i < num; i++ {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewAsteroid(0), common.ADD)
@@ -103,9 +136,9 @@ func (g *Game) checkPressedKey() {
 	falcon := common.GetCommandCenterInstance().GetFalcon()
 
 	switch {
-	case ebiten.IsKeyPressed(ebiten.KeySpace):
+	case inpututil.IsKeyJustReleased(ebiten.KeySpace):
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewBullet(falcon), common.ADD)
-	case ebiten.IsKeyPressed(ebiten.KeyF):
+	case inpututil.IsKeyJustReleased(ebiten.KeyF):
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewNuke(falcon), common.ADD)
 	case ebiten.IsKeyPressed(ebiten.KeyUp):
 		falcon.SetThrusting(true)
@@ -163,8 +196,23 @@ func (g *Game) checkNewLevel() {
 		return
 	}
 
+	commandCenter := common.GetCommandCenterInstance()
+	falcon := commandCenter.GetFalcon()
+
 	level := common.GetCommandCenterInstance().GetLevel()
+	commandCenter.SetScore(commandCenter.GetScore() + int64(level)*10000)
+	falcon.SetCenter(prime.Point{
+		X: float64(common.DIM.Width / 2),
+		Y: float64(common.DIM.Height / 2),
+	})
+
+	ordinal := level % 6
+	commandCenter.SetUniverse(common.Universe(ordinal))
+	commandCenter.SetRadar(ordinal > 1)
 
 	level++
+	commandCenter.SetLevel(level)
 	g.spawnBigAsteroids(level)
+	falcon.SetShield(model.FALCON_INITIAL_SPAWN_TIME)
+	falcon.SetShowLevel(model.FALCON_INITIAL_SPAWN_TIME)
 }
