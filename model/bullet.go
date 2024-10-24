@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	BULLET_EXPIRE            = int(math.Round(20 * common.GOLANG_FRAMES_SCALE_FACTOR))
+	BULLET_EXPIRY            = int(math.Round(20 * common.GOLANG_FRAMES_SCALE_FACTOR))
 	BULLET_FIRE_POWER        = 35.0 / common.GOLANG_FRAMES_SCALE_FACTOR
 	BULLET_KICK_BACK_DIVISOR = 36.0 * common.GOLANG_FRAMES_SCALE_FACTOR
 )
@@ -29,7 +29,7 @@ func NewBullet(falcon common.IFalcon) *Bullet {
 
 	bullet.team = common.FRIEND
 	bullet.color = OrangeColor
-	bullet.expiry = BULLET_EXPIRE
+	bullet.expiry = BULLET_EXPIRY
 	bullet.radius = 6
 
 	bullet.center = falcon.GetCenter()

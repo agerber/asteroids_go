@@ -10,6 +10,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const (
+	ASTEROID_LARGE_RADIUS      = 110
+	ASTEROID_MAX_RADIANS_X1000 = 6283
+	ASTEROID_PRECISION         = 1000.0
+)
+
 type Asteroid struct {
 	*Sprite
 }
@@ -20,9 +26,9 @@ func NewAsteroid(size int) *Asteroid {
 	}
 
 	if size == 0 {
-		asteroid.radius = common.LARGE_RADIUS
+		asteroid.radius = ASTEROID_LARGE_RADIUS
 	} else {
-		asteroid.radius = common.LARGE_RADIUS / (size * 2)
+		asteroid.radius = ASTEROID_LARGE_RADIUS / (size * 2)
 	}
 	asteroid.team = common.FOE
 	asteroid.color = color.White
@@ -90,8 +96,8 @@ func (a *Asteroid) generateVertices() []prime.Point {
 	polars := make([]prime.PolarPoint, vertices)
 
 	for i := 0; i < vertices; i++ {
-		r := (800 + float64(common.GenerateRandomInt(200))) / common.PRECISION
-		theta := float64(common.GenerateRandomInt(common.MAX_RADIANS_X1000)) / common.PRECISION
+		r := (800 + float64(common.GenerateRandomInt(200))) / ASTEROID_PRECISION
+		theta := float64(common.GenerateRandomInt(ASTEROID_MAX_RADIANS_X1000)) / ASTEROID_PRECISION
 		polars[i] = prime.PolarPoint{R: r, Theta: theta}
 	}
 
@@ -101,7 +107,7 @@ func (a *Asteroid) generateVertices() []prime.Point {
 
 	points := make([]prime.Point, vertices)
 	for i, p := range polars {
-		points[i] = common.PolarToCartesian(p, common.PRECISION)
+		points[i] = common.PolarToCartesian(p, ASTEROID_PRECISION)
 	}
 
 	return points
@@ -109,11 +115,11 @@ func (a *Asteroid) generateVertices() []prime.Point {
 
 func (a *Asteroid) getSize() int {
 	switch a.radius {
-	case common.LARGE_RADIUS:
+	case ASTEROID_LARGE_RADIUS:
 		return 0
-	case common.LARGE_RADIUS / 2:
+	case ASTEROID_LARGE_RADIUS / 2:
 		return 1
-	case common.LARGE_RADIUS / 4:
+	case ASTEROID_LARGE_RADIUS / 4:
 		return 2
 	default:
 		return 0

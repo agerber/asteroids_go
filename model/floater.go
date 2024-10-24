@@ -2,10 +2,13 @@ package model
 
 import (
 	"image/color"
+	"math"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model/prime"
 )
+
+var FLOATER_EXPIRY = int(math.Round(250 * common.GOLANG_FRAMES_SCALE_FACTOR))
 
 type Floater struct {
 	*Sprite
@@ -17,12 +20,12 @@ func NewFloater() *Floater {
 	}
 
 	floater.team = common.FLOATER
-	floater.expiry = 250
+	floater.expiry = FLOATER_EXPIRY
 	floater.color = color.White
 	floater.radius = 50
-	floater.spin = floater.somePosNegValue(4)
-	floater.deltaX = floater.somePosNegValue(4)
-	floater.deltaY = floater.somePosNegValue(4)
+	floater.spin = floater.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
+	floater.deltaX = floater.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
+	floater.deltaY = floater.somePosNegValue(10 / common.GOLANG_FRAMES_SCALE_FACTOR)
 
 	listPoints := []prime.Point{
 		{X: 5, Y: 5},

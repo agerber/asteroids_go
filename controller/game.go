@@ -75,13 +75,13 @@ func (g *Game) processGameOpsQueue() {
 }
 
 func (g *Game) spawnShieldFloater() {
-	if common.GetCommandCenterInstance().GetFrame()%common.SPAWN_SHIELD_FLOATER == 0 {
+	if common.GetCommandCenterInstance().GetFrame()%model.SPAWN_SHIELD_FLOATER == 0 {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewShieldFloater(), common.ADD)
 	}
 }
 
 func (g *Game) spawnNukeFloater() {
-	if common.GetCommandCenterInstance().GetFrame()%common.SPAWN_NUKE_FLOATER == 0 {
+	if common.GetCommandCenterInstance().GetFrame()%model.SPAWN_NUKE_FLOATER == 0 {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewNukeFloater(), common.ADD)
 	}
 }
