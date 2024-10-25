@@ -41,7 +41,7 @@ func NewAsteroid(size int) *Asteroid {
 }
 
 func NewAsteroidFromExisting(astExploded *Asteroid) *Asteroid {
-	newSmallerSize := astExploded.getSize() + 1
+	newSmallerSize := astExploded.GetSize() + 1
 
 	newAsteroid := NewAsteroid(newSmallerSize)
 	newAsteroid.center = astExploded.center
@@ -82,9 +82,9 @@ func (a *Asteroid) RemoveFromGame(list *list.List) {
 	}
 
 	a.spawnSmallerAsteroidsOrDebris()
-	common.GetCommandCenterInstance().SetScore(common.GetCommandCenterInstance().GetScore() + 10*(int64(a.getSize())+1))
+	common.GetCommandCenterInstance().SetScore(common.GetCommandCenterInstance().GetScore() + 10*(int64(a.GetSize())+1))
 
-	if a.getSize() > 1 {
+	if a.GetSize() > 1 {
 		common.PlaySound("pillow.wav")
 	} else {
 		common.PlaySound("kapow.wav")
@@ -113,7 +113,7 @@ func (a *Asteroid) generateVertices() []prime.Point {
 	return points
 }
 
-func (a *Asteroid) getSize() int {
+func (a *Asteroid) GetSize() int {
 	switch a.radius {
 	case ASTEROID_LARGE_RADIUS:
 		return 0
@@ -127,7 +127,7 @@ func (a *Asteroid) getSize() int {
 }
 
 func (a *Asteroid) spawnSmallerAsteroidsOrDebris() {
-	size := a.getSize()
+	size := a.GetSize()
 
 	if size > 1 {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(NewWhiteCloudDebris(a.Sprite), common.ADD)

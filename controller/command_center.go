@@ -9,17 +9,17 @@ import (
 )
 
 type CommandCenter struct {
-	universe    common.Universe
-	numFalcons  int
-	level       int
-	score       int64
-	paused      bool
-	themeMusic  bool
-	radar       bool
-	frame       int64
-	falcon      common.IFalcon
-	miniDimHash map[common.Universe]common.Dimension
-	//private final MiniMap miniMap = new MiniMap();
+	universe     common.Universe
+	numFalcons   int
+	level        int
+	score        int64
+	paused       bool
+	themeMusic   bool
+	radar        bool
+	frame        int64
+	falcon       common.IFalcon
+	miniDimHash  map[common.Universe]common.Dimension
+	miniMap      *model.MiniMap
 	movDebris    *list.List
 	movFriends   *list.List
 	movFoes      *list.List
@@ -29,9 +29,9 @@ type CommandCenter struct {
 
 func NewCommandCenter() *CommandCenter {
 	return &CommandCenter{
-		falcon:      model.NewFalcon(),
-		miniDimHash: make(map[common.Universe]common.Dimension),
-		//new MiniMap();
+		falcon:       model.NewFalcon(),
+		miniDimHash:  make(map[common.Universe]common.Dimension),
+		miniMap:      model.NewMiniMap(),
 		movDebris:    list.New(),
 		movFriends:   list.New(),
 		movFoes:      list.New(),
@@ -51,7 +51,7 @@ func (c *CommandCenter) InitGame() {
 	c.numFalcons = 4
 	c.falcon.DecrementFalconNumAndSpawn()
 	c.gameOpsQueue.Enqueue(c.falcon, common.ADD)
-	//opsQueue.enqueue(miniMap, GameOp.Action.ADD)
+	c.gameOpsQueue.Enqueue(c.miniMap, common.ADD)
 }
 
 func (c *CommandCenter) GetFrame() int64 {
