@@ -3,6 +3,7 @@ package controller
 import (
 	"container/list"
 	"os"
+	"time"
 
 	"github.com/agerber/asteroids_go/common"
 	"github.com/agerber/asteroids_go/model"
@@ -13,7 +14,8 @@ import (
 )
 
 type Game struct {
-	gamePanel *view.GamePanel
+	gamePanel     *view.GamePanel
+	lastFrameTime time.Time
 }
 
 func NewGame() *Game {
@@ -37,6 +39,12 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	if time.Since(g.lastFrameTime) < time.Second/time.Duration(common.GOLANG_FRAMES_PER_SECOND) {
+		return
+	}
+	g.lastFrameTime = time.Now()
+
+	screen.Clear()
 	g.gamePanel.Draw(screen)
 }
 
