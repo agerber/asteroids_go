@@ -143,17 +143,20 @@ func (g *Game) spawnBigAsteroids(num int) {
 func (g *Game) checkPressedKey() {
 	falcon := common.GetCommandCenterInstance().GetFalcon()
 
-	switch {
-	case inpututil.IsKeyJustReleased(ebiten.KeySpace):
+	if inpututil.IsKeyJustReleased(ebiten.KeySpace) {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewBullet(falcon), common.ADD)
-	case inpututil.IsKeyJustReleased(ebiten.KeyF):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyF) {
 		common.GetCommandCenterInstance().GetGameOpsQueue().Enqueue(model.NewNuke(falcon), common.ADD)
-	case ebiten.IsKeyPressed(ebiten.KeyUp):
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		falcon.SetThrusting(true)
 		common.PlaySound("whitenoise_loop.wav")
-	case ebiten.IsKeyPressed(ebiten.KeyLeft):
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		falcon.SetTurnState(common.LEFT)
-	case ebiten.IsKeyPressed(ebiten.KeyRight):
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		falcon.SetTurnState(common.RIGHT)
 	}
 }
@@ -162,24 +165,30 @@ func (g *Game) checkReleasedKey() {
 	falcon := common.GetCommandCenterInstance().GetFalcon()
 	commandCenter := common.GetCommandCenterInstance()
 
-	switch {
-	case inpututil.IsKeyJustReleased(ebiten.KeyS) && commandCenter.IsGameOver():
+	if inpututil.IsKeyJustReleased(ebiten.KeyS) && commandCenter.IsGameOver() {
 		commandCenter.InitGame()
-	case inpututil.IsKeyJustReleased(ebiten.KeyLeft):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyLeft) {
 		falcon.SetTurnState(common.IDLE)
-	case inpututil.IsKeyJustReleased(ebiten.KeyRight):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyRight) {
 		falcon.SetTurnState(common.IDLE)
-	case inpututil.IsKeyJustReleased(ebiten.KeyUp):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyUp) {
 		falcon.SetThrusting(false)
 		common.StopSound("whitenoise_loop.wav")
-	case inpututil.IsKeyJustReleased(ebiten.KeyP):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyP) {
 		commandCenter.SetPaused(!commandCenter.IsPaused())
-	case inpututil.IsKeyJustReleased(ebiten.KeyQ):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyQ) {
 		common.CloseSound()
 		os.Exit(0)
-	case inpututil.IsKeyJustReleased(ebiten.KeyA):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyA) {
 		commandCenter.SetRadar(!commandCenter.IsRadar())
-	case inpututil.IsKeyJustReleased(ebiten.KeyM):
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyM) {
 		if commandCenter.IsThemeMusic() {
 			common.StopSound("dr_loop.wav")
 		} else {
